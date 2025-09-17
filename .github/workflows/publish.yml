@@ -1,0 +1,34 @@
+name: Publish
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    #if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: pip install toml
+      - name: Get version
+        run: |
+            VERSION=$(python -c 'import toml; print("v" + toml.load("pyproject.toml")["project"]["version"])')
+            if [ $? -ne 0 ]; then exit 1; fi
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Build and publish to pypi
+        uses: JRubics/poetry-publish@v1.17
+        with:
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+      - name: Create Release
+        uses: actions/create-release@v1
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          draft: false
+          prerelease: false
