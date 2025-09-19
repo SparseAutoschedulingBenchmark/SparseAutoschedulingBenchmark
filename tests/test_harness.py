@@ -1,12 +1,14 @@
-import pytest
-
 import numpy as np
 
+from SparseAutoschedulingBenchmark.Benchmarks.MatMul import (
+    benchmark_matmul,
+    dg_matmul_dense_small,
+)
 from SparseAutoschedulingBenchmark.BinsparseFormat import BinsparseFormat
+from SparseAutoschedulingBenchmark.Frameworks.CheckerFramework import CheckerFramework
 from SparseAutoschedulingBenchmark.Frameworks.NumpyFramework import NumpyFramework
 
 
-@pytest.fixture
 def test_numpy_framework():
     framework = NumpyFramework()
 
@@ -17,7 +19,9 @@ def test_numpy_framework():
     assert np.array_equal(arr, arr_converted), "Dense array conversion failed"
 
     bsf_converted = framework.to_benchmark(arr)
-    assert bsf.data == bsf_converted.data, "Dense array to_benchmark failed"
+    assert BinsparseFormat.to_coo(bsf) == BinsparseFormat.to_coo(bsf_converted), (
+        "Dense array to_benchmark failed"
+    )
 
     # Sparse array test (COO format)
     row = np.array([0, 1, 2])
@@ -33,7 +37,43 @@ def test_numpy_framework():
         "Sparse array conversion failed"
     )
 
-    bsf_sparse_converted = framework.to_benchmark(arr_sparse_converted)
-    assert bsf_sparse.data == bsf_sparse_converted.data, (
-        "Sparse array to_benchmark failed"
+    bsf_sparse_converted = BinsparseFormat.to_coo(
+        framework.to_benchmark(arr_sparse_converted)
     )
+    assert bsf_sparse == bsf_sparse_converted, "Sparse array to_benchmark failed"
+
+
+def test_checker_framework():
+    framework = CheckerFramework()
+    # Test lazy and compute
+    assert isinstance(
+        benchmark_matmul(framework, *dg_matmul_dense_small()), BinsparseFormat
+    ), "MatMul benchmark failed with CheckerFramework"
+
+    def bad_benchmark_no_compute(framework, A_bench, B_bench):
+        A_lazy = framework.lazy(framework.from_benchmark(A_bench))
+        B_lazy = framework.lazy(framework.from_benchmark(B_bench))
+        C_lazy = framework.matmul(A_lazy, B_lazy)
+        # Intentionally not calling compute to test error handling
+        return framework.to_benchmark(C_lazy)
+
+    try:
+        bad_benchmark_no_compute(framework, *dg_matmul_dense_small())
+        raise ValueError(
+            "Expected error for converting lazy tensor to benchmark format"
+        )
+    except AssertionError:
+        pass  # Expected
+
+    def bad_benchmark_no_lazy(framework, A_bench, B_bench):
+        A_lazy = framework.from_benchmark(A_bench)
+        B_lazy = framework.from_benchmark(B_bench)
+        C_lazy = framework.matmul(A_lazy, B_lazy)
+        # Intentionally not calling compute to test error handling
+        return framework.to_benchmark(framework.compute(C_lazy))
+
+    try:
+        bad_benchmark_no_lazy(framework, *dg_matmul_dense_small())
+        raise ValueError("Expected error for applying operator to eager tensors")
+    except AssertionError:
+        pass  # Expected

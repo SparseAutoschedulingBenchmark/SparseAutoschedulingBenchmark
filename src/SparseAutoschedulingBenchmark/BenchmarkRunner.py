@@ -8,9 +8,10 @@ from .Benchmarks.MatMul import (
     dg_matmul_sparse_large,
     dg_matmul_sparse_small,
 )
+from .Frameworks.CheckerFramework import CheckerFramework
 from .Frameworks.NumpyFramework import NumpyFramework
 
-FRAMEWORK_DICT = {"numpy": NumpyFramework()}
+FRAMEWORK_DICT = {"numpy": NumpyFramework(), "checker": CheckerFramework()}
 BENCHMARK_DICT = {"matmul": benchmark_matmul}
 DATA_GENERATOR_DICT = {
     "matmul": {
