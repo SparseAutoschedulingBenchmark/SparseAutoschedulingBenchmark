@@ -1,6 +1,7 @@
 import argparse
 import time
 
+from .Benchmarks.Jacobi import benchmark_jacobi, dg_jacobi_sparse_small
 from .Benchmarks.MatMul import (
     benchmark_matmul,
     dg_matmul_dense_large,
@@ -12,7 +13,7 @@ from .Frameworks.CheckerFramework import CheckerFramework
 from .Frameworks.NumpyFramework import NumpyFramework
 
 FRAMEWORK_DICT = {"numpy": NumpyFramework(), "checker": CheckerFramework()}
-BENCHMARK_DICT = {"matmul": benchmark_matmul}
+BENCHMARK_DICT = {"matmul": benchmark_matmul, "jacobi": benchmark_jacobi}
 DATA_GENERATOR_DICT = {
     "matmul": {
         "matmul_dense_small": dg_matmul_dense_small,
@@ -20,6 +21,7 @@ DATA_GENERATOR_DICT = {
         "matmul_sparse_small": dg_matmul_sparse_small,
         "matmul_sparse_large": dg_matmul_sparse_large,
     },
+    "jacobi": {"jacobi_sparse_small": dg_jacobi_sparse_small},
 }
 
 
