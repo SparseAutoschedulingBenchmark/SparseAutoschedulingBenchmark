@@ -23,5 +23,9 @@ class AbstractFramework(ABC):
         pass
 
     @abstractmethod
+    def einsum(self, prgm, **kwargs):
+        pass
+
+    @abstractmethod
     def __getattr__(self, name):
         pass

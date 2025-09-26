@@ -2,6 +2,7 @@ import numpy as np
 
 from ..BinsparseFormat import BinsparseFormat
 from .AbstractFramework import AbstractFramework
+from .einsum import einsum
 
 
 def unwrap(x):
@@ -259,14 +260,20 @@ class CheckerOperator:
         self.xp = xp
         self.operator = operator
 
-    def __call__(self, *args, **kwds):
+    def __call__(self, *args, **kwargs):
         for arg in args:
             if isinstance(arg, EagerCheckerTensor):
                 raise AssertionError(
                     "Eager Tensors should always be made lazy before being operated on!"
                 )
-        arrays = [unwrap(arg) for arg in args]
-        return LazyCheckerTensor(self.xp, self.operator(*arrays, **kwds))
+        for kwarg in kwargs.values():
+            if isinstance(kwarg, EagerCheckerTensor):
+                raise AssertionError(
+                    "Eager Tensors should always be made lazy before being operated on!"
+                )
+        args = [unwrap(arg) for arg in args]
+        kwargs = {k: unwrap(v) for k, v in kwargs.items()}
+        return LazyCheckerTensor(self.xp, self.operator(*args, **kwargs))
 
 
 class CheckerFramework(AbstractFramework):
@@ -309,6 +316,9 @@ class CheckerFramework(AbstractFramework):
 
     def compute(self, array: CheckerTensor):
         return EagerCheckerTensor(self, array)
+
+    def einsum(self, prgm, **kwargs):
+        return CheckerOperator(self, einsum)(self.xp, prgm, **kwargs)
 
     def __getattr__(self, name):
         return CheckerOperator(self, getattr(self.xp, name))

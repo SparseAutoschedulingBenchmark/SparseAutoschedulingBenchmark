@@ -33,7 +33,7 @@ SparseAutoschedulingBenchmark uses [pytest](https://docs.pytest.org/en/latest/) 
 tests:
 
 ```bash
-poetry install --with test
+poetry install --extras test
 poetry run pytest
 ```
 

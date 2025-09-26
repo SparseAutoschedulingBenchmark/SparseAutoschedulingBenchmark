@@ -2,6 +2,7 @@ import numpy as np
 
 from ..BinsparseFormat import BinsparseFormat
 from .AbstractFramework import AbstractFramework
+from .einsum import einsum
 
 
 class NumpyFramework(AbstractFramework):
@@ -32,6 +33,9 @@ class NumpyFramework(AbstractFramework):
 
     def compute(self, array):
         return array
+
+    def einsum(self, prgm, **kwargs):
+        return einsum(np, prgm, **kwargs)
 
     def __getattr__(self, name):
         return getattr(np, name)

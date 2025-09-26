@@ -5,6 +5,7 @@ import numpy as np
 import SparseAutoschedulingBenchmark as autobench
 from SparseAutoschedulingBenchmark.BinsparseFormat import BinsparseFormat
 from SparseAutoschedulingBenchmark.Frameworks.AbstractFramework import AbstractFramework
+from SparseAutoschedulingBenchmark.Frameworks.einsum import einsum
 
 
 class NumpyTestFramework(AbstractFramework):
@@ -35,6 +36,9 @@ class NumpyTestFramework(AbstractFramework):
 
     def compute(self, array):
         return array
+
+    def einsum(self, prgm, **kwargs):
+        return einsum(np, prgm, **kwargs)
 
     def __getattr__(self, name):
         return getattr(np, name)
