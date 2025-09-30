@@ -64,16 +64,3 @@ def test_checker_framework():
         )
     except AssertionError:
         pass  # Expected
-
-    def bad_benchmark_no_lazy(framework, A_bench, B_bench):
-        A_lazy = framework.from_benchmark(A_bench)
-        B_lazy = framework.from_benchmark(B_bench)
-        C_lazy = framework.matmul(A_lazy, B_lazy)
-        # Intentionally not calling compute to test error handling
-        return framework.to_benchmark(framework.compute(C_lazy))
-
-    try:
-        bad_benchmark_no_lazy(framework, *dg_matmul_dense_small())
-        raise ValueError("Expected error for applying operator to eager tensors")
-    except AssertionError:
-        pass  # Expected

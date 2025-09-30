@@ -241,6 +241,30 @@ class LazyCheckerTensor(CheckerTensor):
             "Lazy Tensors should not be modified directly; they must be computed first!"
         )
 
+    def __complex__(self):
+        """
+        Converts a zero-dimensional array to a Python `complex` object.
+        """
+        raise ValueError("Cannot convert lazy tensor to complex.")
+
+    def __float__(self):
+        """
+        Converts a zero-dimensional array to a Python `float` object.
+        """
+        raise ValueError("Cannot convert lazy tensor to float.")
+
+    def __int__(self):
+        """
+        Converts a zero-dimensional array to a Python `int` object.
+        """
+        raise ValueError("Cannot convert lazy tensor to int.")
+
+    def __bool__(self):
+        """
+        Converts a zero-dimensional array to a Python `bool` object.
+        """
+        raise ValueError("Cannot convert lazy tensor to bool.")
+
 
 class EagerCheckerTensor(CheckerTensor):
     def __getitem__(self, key):
@@ -261,19 +285,15 @@ class CheckerOperator:
         self.operator = operator
 
     def __call__(self, *args, **kwargs):
-        for arg in args:
-            if isinstance(arg, EagerCheckerTensor):
-                raise AssertionError(
-                    "Eager Tensors should always be made lazy before being operated on!"
-                )
-        for kwarg in kwargs.values():
-            if isinstance(kwarg, EagerCheckerTensor):
-                raise AssertionError(
-                    "Eager Tensors should always be made lazy before being operated on!"
-                )
+        if any(isinstance(arg, LazyCheckerTensor) for arg in args) or any(
+            isinstance(kwarg, LazyCheckerTensor) for kwarg in kwargs.values()
+        ):
+            args = [unwrap(arg) for arg in args]
+            kwargs = {k: unwrap(v) for k, v in kwargs.items()}
+            return LazyCheckerTensor(self.xp, self.operator(*args, **kwargs))
         args = [unwrap(arg) for arg in args]
         kwargs = {k: unwrap(v) for k, v in kwargs.items()}
-        return LazyCheckerTensor(self.xp, self.operator(*args, **kwargs))
+        return EagerCheckerTensor(self.xp, self.operator(*args, **kwargs))
 
 
 class CheckerFramework(AbstractFramework):
