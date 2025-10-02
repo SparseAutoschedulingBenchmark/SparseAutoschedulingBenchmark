@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.io import mmread
+from scipy.sparse import random
 
 from ..BinsparseFormat import BinsparseFormat
 
@@ -31,7 +33,7 @@ AI was used to debug code. This statement was written by hand.
 
 
 def benchmark_jacobi(
-    xp, A_bench, b_bench, x_bench, rel_tol=1e-8, abs_tol=1e-20, max_iters=10_000
+    xp, A_bench, b_bench, x_bench, rel_tol=1e-8, abs_tol=1e-20, max_iters=100
 ):
     A = xp.lazy(xp.from_benchmark(A_bench))
     b = xp.lazy(xp.from_benchmark(b_bench))
@@ -61,15 +63,36 @@ def benchmark_jacobi(
 
 
 def norm(xp, v):
-    return xp.sqrt(xp.sum(xp.multiply(v, v)))
+    norm = xp.sqrt(xp.sum(xp.multiply(v, v)))
+    if norm == xp.inf:
+        raise RuntimeError("Matrix is diverging to infinity")
+    return norm
 
 
 def dg_jacobi_sparse_small():
-    A = np.array([[8, 0, 3], [4, 9, 0], [0, 4, 8]])
-    x = np.array([1, 4, 9])
-    b = np.matmul(A, x)
-    x = np.zeros((3,))
-    A_bin = BinsparseFormat.from_numpy(A)
-    b_bin = BinsparseFormat.from_numpy(b)
+    rng = np.random.default_rng(0)
+    A = mmread("./InputData/Jacobi/nos1.mtx")
+    check_convergence(A)
+    x = random(
+        A.shape[1], 1, density=0.1, format="coo", dtype=np.float64, random_state=rng
+    )
+    b = (A @ x).tocoo()
+    x = np.zeros(
+        A.shape[1],
+    )
+
+    A_bin = BinsparseFormat.from_coo((A.row, A.col), A.data, A.shape)
+    b_bin = BinsparseFormat.from_coo((b.row, b.col), b.data, b.shape)
     x_bin = BinsparseFormat.from_numpy(x)
     return (A_bin, b_bin, x_bin)
+
+
+def check_convergence(A):
+    A = A.tocsr()
+    diag = np.abs(A.diagonal())
+    off_diag_sum = np.abs(A).sum(axis=1).A1 - diag
+    is_diag_dom = diag > off_diag_sum
+    if np.all(is_diag_dom):
+        print("Matrix is diagonally dominant: True")
+    else:
+        print("Matrix is diagonally dominant: False")
