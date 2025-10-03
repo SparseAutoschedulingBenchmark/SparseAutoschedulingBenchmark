@@ -51,7 +51,7 @@ def benchmark_jacobi(
         x = x + r / d
         x = xp.lazy(xp.compute(x))
 
-        r = b - xp.matmul(A, x)
+        r = b - A @ x
         r = xp.lazy(xp.compute(r))
         it += 1
     if it >= max_iters:
