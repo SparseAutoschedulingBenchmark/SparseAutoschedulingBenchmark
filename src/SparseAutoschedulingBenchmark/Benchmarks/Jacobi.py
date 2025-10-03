@@ -71,18 +71,18 @@ def generate_jacobi_data(source, diag_modifier=1, has_b_file=False):
     A = mmread("./InputData/Jacobi/" + source + ".mtx")
     A = A.tocoo()
     A.data[A.row == A.col] *= diag_modifier
-    x = random(
-        A.shape[1], 1, density=0.1, format="coo", dtype=np.float64, random_state=rng
-    )
+
     if has_b_file:
         b = mmread("./InputData/Jacobi/" + source + "_b.mtx")
         b = b.flatten()
     else:
+        x = random(
+            A.shape[1], 1, density=0.1, format="coo", dtype=np.float64, random_state=rng
+        )
         b = A @ x
         b = b.toarray().flatten()
-    x = np.zeros(
-        A.shape[1],
-    )
+
+    x = np.zeros(A.shape[1])
 
     A_bin = BinsparseFormat.from_coo((A.row, A.col), A.data, A.shape)
     b_bin = BinsparseFormat.from_numpy(b)
@@ -94,20 +94,21 @@ def dg_jacobi_sparse_small():
     return generate_jacobi_data("nos1")
 
 
-def dg_jacobi_sparse_small_fast():
-    return generate_jacobi_data("nos1", diag_modifier=1.1)
-
-
 def dg_jacobi_sparse_medium():
     return generate_jacobi_data("poisson2D", has_b_file=True)
 
 
-def dg_jacobi_sparse_medium_fast():
-    return generate_jacobi_data("poisson2D", diag_modifier=1.1, has_b_file=True)
-
-
 def dg_jacobi_sparse_large():
     return generate_jacobi_data("nos6")
+
+
+# The small and large datasets take over 10,000,000 iterations to converge
+# with the default tolerance, so we modify the diagonal to make them
+# converge faster for benchmarking purposes
+
+
+def dg_jacobi_sparse_small_fast():
+    return generate_jacobi_data("nos1", diag_modifier=1.1)
 
 
 def dg_jacobi_sparse_large_fast():

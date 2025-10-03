@@ -6,7 +6,6 @@ from .Benchmarks.Jacobi import (
     dg_jacobi_sparse_large,
     dg_jacobi_sparse_large_fast,
     dg_jacobi_sparse_medium,
-    dg_jacobi_sparse_medium_fast,
     dg_jacobi_sparse_small,
     dg_jacobi_sparse_small_fast,
 )
@@ -33,7 +32,6 @@ DATA_GENERATOR_DICT = {
         "jacobi_sparse_small": dg_jacobi_sparse_small,
         "jacobi_sparse_small_fast": dg_jacobi_sparse_small_fast,
         "jacobi_sparse_medium": dg_jacobi_sparse_medium,
-        "jacobi_sparse_medium_fast": dg_jacobi_sparse_medium_fast,
         "jacobi_sparse_large": dg_jacobi_sparse_large,
         "jacobi_sparse_large_fast": dg_jacobi_sparse_large_fast,
     },
