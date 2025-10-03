@@ -1,6 +1,12 @@
 %%MatrixMarket matrix coordinate real symmetric
+%-------------------------------------------------------------------------------
+% Taken from SuiteSparse Matrix Collection: https://sparse.tamu.edu/HB/nos6
+% Author: H. Simon
+% Date: 1982
+% Editor: I. Duff, R. Grimes, J. Lewis
+%-------------------------------------------------------------------------------
 675 675 1965
-1 1  1.0004000000000e+00
+1 1 1.0004000000000e+00
 2 1 -1.0000000000000e-04
 31 1 -1.0000000000000e-04
 2 2  1.0004000000000e+00

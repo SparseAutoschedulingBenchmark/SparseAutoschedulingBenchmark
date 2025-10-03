@@ -33,7 +33,7 @@ AI was used to debug code. This statement was written by hand.
 
 
 def benchmark_jacobi(
-    xp, A_bench, b_bench, x_bench, rel_tol=1e-8, abs_tol=1e-20, max_iters=100
+    xp, A_bench, b_bench, x_bench, rel_tol=1e-8, abs_tol=1e-20, max_iters=1_000_000_000
 ):
     A = xp.lazy(xp.from_benchmark(A_bench))
     b = xp.lazy(xp.from_benchmark(b_bench))
@@ -63,36 +63,52 @@ def benchmark_jacobi(
 
 
 def norm(xp, v):
-    norm = xp.sqrt(xp.sum(xp.multiply(v, v)))
-    if norm == xp.inf:
-        raise RuntimeError("Matrix is diverging to infinity")
-    return norm
+    return xp.sqrt(xp.sum(xp.multiply(v, v)))
 
 
-def dg_jacobi_sparse_small():
+def generate_jacobi_data(source, diag_modifier=1, has_b_file=False):
     rng = np.random.default_rng(0)
-    A = mmread("./InputData/Jacobi/nos1.mtx")
-    check_convergence(A)
+    A = mmread("./InputData/Jacobi/" + source + ".mtx")
+    A = A.tocoo()
+    A.data[A.row == A.col] *= diag_modifier
     x = random(
         A.shape[1], 1, density=0.1, format="coo", dtype=np.float64, random_state=rng
     )
-    b = (A @ x).tocoo()
+    if has_b_file:
+        b = mmread("./InputData/Jacobi/" + source + "_b.mtx")
+        b = b.flatten()
+    else:
+        b = A @ x
+        b = b.toarray().flatten()
     x = np.zeros(
         A.shape[1],
     )
 
     A_bin = BinsparseFormat.from_coo((A.row, A.col), A.data, A.shape)
-    b_bin = BinsparseFormat.from_coo((b.row, b.col), b.data, b.shape)
+    b_bin = BinsparseFormat.from_numpy(b)
     x_bin = BinsparseFormat.from_numpy(x)
     return (A_bin, b_bin, x_bin)
 
 
-def check_convergence(A):
-    A = A.tocsr()
-    diag = np.abs(A.diagonal())
-    off_diag_sum = np.abs(A).sum(axis=1).A1 - diag
-    is_diag_dom = diag > off_diag_sum
-    if np.all(is_diag_dom):
-        print("Matrix is diagonally dominant: True")
-    else:
-        print("Matrix is diagonally dominant: False")
+def dg_jacobi_sparse_small():
+    return generate_jacobi_data("nos1")
+
+
+def dg_jacobi_sparse_small_fast():
+    return generate_jacobi_data("nos1", diag_modifier=1.1)
+
+
+def dg_jacobi_sparse_medium():
+    return generate_jacobi_data("poisson2D", has_b_file=True)
+
+
+def dg_jacobi_sparse_medium_fast():
+    return generate_jacobi_data("poisson2D", diag_modifier=1.1, has_b_file=True)
+
+
+def dg_jacobi_sparse_large():
+    return generate_jacobi_data("nos6")
+
+
+def dg_jacobi_sparse_large_fast():
+    return generate_jacobi_data("nos6", diag_modifier=1.1)
