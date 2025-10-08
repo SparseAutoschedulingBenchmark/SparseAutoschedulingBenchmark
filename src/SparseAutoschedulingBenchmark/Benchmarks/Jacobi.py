@@ -22,10 +22,11 @@ Sparsity makes the Jacobi method efficient because each update only needs to
 access the nonzero entries, reducing complexity from O(mn) to O(nnz)
 Implementation:
 Hand-written code modelling the algorithm structure outlined in:
-https://www.cs.princeton.edu/~appel/papers/jacobi.pdf
+https://www.cs.princeton.edu/~appel/papers/jacobi.pdf and
+https://courses.grainger.illinois.edu/cs357/su2014/lectures/lecture10.pdf
 Data Generation:
-Data collected from SuiteSparse Matrix Collection that is diagonally
-dominant and invertible
+Data collected from SuiteSparse Matrix Collection consisting of invertible
+matrices whose Jacobi iteration matrices have spectral radius < 1.
 Statement on the use of Generative AI:
 No generative AI was used to write the benchmark function itself. Generative
 AI was used to debug code. This statement was written by hand.
@@ -113,3 +114,26 @@ def dg_jacobi_sparse_small_fast():
 
 def dg_jacobi_sparse_large_fast():
     return generate_jacobi_data("nos6", diag_modifier=1.1)
+
+
+def check_convergence(A):
+    A = A.tocsr()
+    diag = np.abs(A.diagonal())
+    off_diag_sum = np.abs(A).sum(axis=1).A1 - diag
+    is_diag_dom = diag > off_diag_sum
+    if np.all(is_diag_dom):
+        print("Matrix is diagonally dominant: True")
+    else:
+        print("Matrix is diagonally dominant: False")
+    print("Minimum diagonal dominance ratio:")
+    print(np.min(diag / (off_diag_sum)))
+
+
+def spectral_radius_iteration_matrix(A):
+    # Jacobi iteration matrix: M = -D^(-1)(L+U) = -D^(-1)(A-D) = -D^(-1)A - I
+    A = A.tocsr()
+    D_inv = np.diag(1.0 / A.diagonal())
+    M = -(D_inv @ A.toarray() - np.eye(A.shape[0]))
+    vals = np.linalg.eigvals(M)
+    print("Spectral radius of Jacobi iteration matrix:")
+    print(np.max(np.abs(vals)))
