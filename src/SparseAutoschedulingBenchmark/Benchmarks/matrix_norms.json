@@ -1,0 +1,849 @@
+[
+  {
+    "matrix_name": "bcsstm39",
+    "matrix_group": "Boeing",
+    "norm": 0.0,
+    "n": 46772,
+    "nnz": 46772
+  },
+  {
+    "matrix_name": "bcsstm09",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 1083,
+    "nnz": 1083
+  },
+  {
+    "matrix_name": "bcsstm26",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 1922,
+    "nnz": 1922
+  },
+  {
+    "matrix_name": "bcsstm23",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 3134,
+    "nnz": 3134
+  },
+  {
+    "matrix_name": "bibd_81_2",
+    "matrix_group": "JGD_BIBD",
+    "norm": 0.0,
+    "n": 3240,
+    "nnz": 3240
+  },
+  {
+    "matrix_name": "bcsstm19",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 817,
+    "nnz": 817
+  },
+  {
+    "matrix_name": "bcsstm05",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 153,
+    "nnz": 153
+  },
+  {
+    "matrix_name": "bcsstm11",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 1473,
+    "nnz": 1473
+  },
+  {
+    "matrix_name": "bcsstm21",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 3600,
+    "nnz": 3600
+  },
+  {
+    "matrix_name": "t3dl_e",
+    "matrix_group": "Oberwolfach",
+    "norm": 0.0,
+    "n": 20360,
+    "nnz": 20360
+  },
+  {
+    "matrix_name": "bcsstm20",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 485,
+    "nnz": 485
+  },
+  {
+    "matrix_name": "t2dal_e",
+    "matrix_group": "Oberwolfach",
+    "norm": 0.0,
+    "n": 4257,
+    "nnz": 4257
+  },
+  {
+    "matrix_name": "bcsstm24",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 3562,
+    "nnz": 3562
+  },
+  {
+    "matrix_name": "bcsstm25",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 15439,
+    "nnz": 15439
+  },
+  {
+    "matrix_name": "bcsstm02",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 66,
+    "nnz": 66
+  },
+  {
+    "matrix_name": "bcsstm08",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 1074,
+    "nnz": 1074
+  },
+  {
+    "matrix_name": "bcsstm06",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 420,
+    "nnz": 420
+  },
+  {
+    "matrix_name": "bcsstm22",
+    "matrix_group": "HB",
+    "norm": 0.0,
+    "n": 138,
+    "nnz": 138
+  },
+  {
+    "matrix_name": "mesh3em5",
+    "matrix_group": "Pothen",
+    "norm": 0.6731136270670842,
+    "n": 289,
+    "nnz": 1889
+  },
+  {
+    "matrix_name": "mesh1em6",
+    "matrix_group": "Pothen",
+    "norm": 0.68662934875535,
+    "n": 48,
+    "nnz": 306
+  },
+  {
+    "matrix_name": "mesh3e1",
+    "matrix_group": "Pothen",
+    "norm": 0.7927286599976193,
+    "n": 289,
+    "nnz": 1889
+  },
+  {
+    "matrix_name": "mesh1e1",
+    "matrix_group": "Pothen",
+    "norm": 0.7932787036501848,
+    "n": 48,
+    "nnz": 306
+  },
+  {
+    "matrix_name": "Trefethen_20b",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 0.7988057234690054,
+    "n": 19,
+    "nnz": 147
+  },
+  {
+    "matrix_name": "fv2",
+    "matrix_group": "Norris",
+    "norm": 0.8525757589180443,
+    "n": 9801,
+    "nnz": 87025
+  },
+  {
+    "matrix_name": "fv1",
+    "matrix_group": "Norris",
+    "norm": 0.8532344931826474,
+    "n": 9604,
+    "nnz": 85264
+  },
+  {
+    "matrix_name": "Trefethen_200b",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 0.9691070465934575,
+    "n": 199,
+    "nnz": 2873
+  },
+  {
+    "matrix_name": "gr_30_30",
+    "matrix_group": "HB",
+    "norm": 0.9922542516761329,
+    "n": 900,
+    "nnz": 7744
+  },
+  {
+    "matrix_name": "fv3",
+    "matrix_group": "Norris",
+    "norm": 0.9978008637980338,
+    "n": 9801,
+    "nnz": 87025
+  },
+  {
+    "matrix_name": "jnlbrng1",
+    "matrix_group": "GHS_psdef",
+    "norm": 1.0466010449671947,
+    "n": 40000,
+    "nnz": 199200
+  },
+  {
+    "matrix_name": "obstclae",
+    "matrix_group": "GHS_psdef",
+    "norm": 1.1122300712843263,
+    "n": 40000,
+    "nnz": 197608
+  },
+  {
+    "matrix_name": "torsion1",
+    "matrix_group": "GHS_psdef",
+    "norm": 1.1122300845574347,
+    "n": 40000,
+    "nnz": 197608
+  },
+  {
+    "matrix_name": "mesh1em1",
+    "matrix_group": "Pothen",
+    "norm": 1.1234176127318094,
+    "n": 48,
+    "nnz": 306
+  },
+  {
+    "matrix_name": "bodyy4",
+    "matrix_group": "Pothen",
+    "norm": 1.1646707817885738,
+    "n": 17546,
+    "nnz": 121938
+  },
+  {
+    "matrix_name": "Trefethen_20",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 1.194862001242503,
+    "n": 20,
+    "nnz": 158
+  },
+  {
+    "matrix_name": "bodyy5",
+    "matrix_group": "Pothen",
+    "norm": 1.2054762487165605,
+    "n": 18589,
+    "nnz": 129281
+  },
+  {
+    "matrix_name": "mesh2e1",
+    "matrix_group": "Pothen",
+    "norm": 1.2860524238088293,
+    "n": 306,
+    "nnz": 2018
+  },
+  {
+    "matrix_name": "mesh2em5",
+    "matrix_group": "Pothen",
+    "norm": 1.290633018641528,
+    "n": 306,
+    "nnz": 2018
+  },
+  {
+    "matrix_name": "bodyy6",
+    "matrix_group": "Pothen",
+    "norm": 1.3077783194201154,
+    "n": 19366,
+    "nnz": 134748
+  },
+  {
+    "matrix_name": "nos4",
+    "matrix_group": "HB",
+    "norm": 1.3881677434361945,
+    "n": 100,
+    "nnz": 594
+  },
+  {
+    "matrix_name": "nos5",
+    "matrix_group": "HB",
+    "norm": 1.4507984999570045,
+    "n": 468,
+    "nnz": 5172
+  },
+  {
+    "matrix_name": "Trefethen_150",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 1.4517463394089154,
+    "n": 150,
+    "nnz": 2040
+  },
+  {
+    "matrix_name": "Trefethen_200",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 1.4517466267069352,
+    "n": 200,
+    "nnz": 2890
+  },
+  {
+    "matrix_name": "nos6",
+    "matrix_group": "HB",
+    "norm": 1.466086607406625,
+    "n": 675,
+    "nnz": 3255
+  },
+  {
+    "matrix_name": "Trefethen_300",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 1.5311046513887168,
+    "n": 300,
+    "nnz": 4678
+  },
+  {
+    "matrix_name": "Trefethen_500",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 1.5311046995095392,
+    "n": 500,
+    "nnz": 8478
+  },
+  {
+    "matrix_name": "Trefethen_700",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 1.6074124716652205,
+    "n": 700,
+    "nnz": 12654
+  },
+  {
+    "matrix_name": "Trefethen_2000",
+    "matrix_group": "JGD_Trefethen",
+    "norm": 1.6808607704618292,
+    "n": 2000,
+    "nnz": 41906
+  },
+  {
+    "matrix_name": "Muu",
+    "matrix_group": "MathWorks",
+    "norm": 1.7036974151534734,
+    "n": 7102,
+    "nnz": 170134
+  },
+  {
+    "matrix_name": "bcsstk02",
+    "matrix_group": "HB",
+    "norm": 1.7213898781533505,
+    "n": 66,
+    "nnz": 4356
+  },
+  {
+    "matrix_name": "nos3",
+    "matrix_group": "HB",
+    "norm": 1.7303640420992517,
+    "n": 960,
+    "nnz": 15844
+  },
+  {
+    "matrix_name": "685_bus",
+    "matrix_group": "HB",
+    "norm": 1.7361889446835745,
+    "n": 685,
+    "nnz": 3249
+  },
+  {
+    "matrix_name": "nos7",
+    "matrix_group": "HB",
+    "norm": 1.7580514950240458,
+    "n": 729,
+    "nnz": 4617
+  },
+  {
+    "matrix_name": "bloweybq",
+    "matrix_group": "GHS_indef",
+    "norm": 1.8525488949827889,
+    "n": 10001,
+    "nnz": 69991
+  },
+  {
+    "matrix_name": "ted_B_unscaled",
+    "matrix_group": "Bindel",
+    "norm": 1.8981758533213429,
+    "n": 10605,
+    "nnz": 144579
+  },
+  {
+    "matrix_name": "ted_B",
+    "matrix_group": "Bindel",
+    "norm": 1.8981758547553433,
+    "n": 10605,
+    "nnz": 144579
+  },
+  {
+    "matrix_name": "662_bus",
+    "matrix_group": "HB",
+    "norm": 2.0344559473396115,
+    "n": 662,
+    "nnz": 2474
+  },
+  {
+    "matrix_name": "bcsstk21",
+    "matrix_group": "HB",
+    "norm": 2.1038425589042427,
+    "n": 3600,
+    "nnz": 26600
+  },
+  {
+    "matrix_name": "bcsstk09",
+    "matrix_group": "HB",
+    "norm": 2.155571179532972,
+    "n": 1083,
+    "nnz": 18437
+  },
+  {
+    "matrix_name": "494_bus",
+    "matrix_group": "HB",
+    "norm": 2.319346147007249,
+    "n": 494,
+    "nnz": 1666
+  },
+  {
+    "matrix_name": "crystm01",
+    "matrix_group": "Boeing",
+    "norm": 2.4966029054436745,
+    "n": 4875,
+    "nnz": 105339
+  },
+  {
+    "matrix_name": "1138_bus",
+    "matrix_group": "HB",
+    "norm": 2.7975103865845896,
+    "n": 1138,
+    "nnz": 4054
+  },
+  {
+    "matrix_name": "plat362",
+    "matrix_group": "HB",
+    "norm": 2.950652739498877,
+    "n": 362,
+    "nnz": 5786
+  },
+  {
+    "matrix_name": "msc00726",
+    "matrix_group": "Boeing",
+    "norm": 3.0325900027763164,
+    "n": 726,
+    "nnz": 34518
+  },
+  {
+    "matrix_name": "plat1919",
+    "matrix_group": "HB",
+    "norm": 3.086336272627762,
+    "n": 1919,
+    "nnz": 32399
+  },
+  {
+    "matrix_name": "bcsstk34",
+    "matrix_group": "Boeing",
+    "norm": 3.216564848736006,
+    "n": 588,
+    "nnz": 21418
+  },
+  {
+    "matrix_name": "bcsstk10",
+    "matrix_group": "HB",
+    "norm": 3.2638688374502975,
+    "n": 1086,
+    "nnz": 22070
+  },
+  {
+    "matrix_name": "plbuckle",
+    "matrix_group": "TKK",
+    "norm": 3.4993467655497454,
+    "n": 1282,
+    "nnz": 30644
+  },
+  {
+    "matrix_name": "aft01",
+    "matrix_group": "Okunbor",
+    "norm": 3.959798082783139,
+    "n": 8205,
+    "nnz": 125567
+  },
+  {
+    "matrix_name": "bcsstk05",
+    "matrix_group": "HB",
+    "norm": 4.023004685232709,
+    "n": 153,
+    "nnz": 2423
+  },
+  {
+    "matrix_name": "bcsstk22",
+    "matrix_group": "HB",
+    "norm": 5.318176754762949,
+    "n": 138,
+    "nnz": 696
+  },
+  {
+    "matrix_name": "Chem97ZtZ",
+    "matrix_group": "Bates",
+    "norm": 6.110710106364892,
+    "n": 2541,
+    "nnz": 7361
+  },
+  {
+    "matrix_name": "t2dah_e",
+    "matrix_group": "Oberwolfach",
+    "norm": 6.1621784360805885,
+    "n": 11445,
+    "nnz": 176117
+  },
+  {
+    "matrix_name": "bcsstk04",
+    "matrix_group": "HB",
+    "norm": 6.188256002421475,
+    "n": 132,
+    "nnz": 3648
+  },
+  {
+    "matrix_name": "ex5",
+    "matrix_group": "FIDAP",
+    "norm": 6.202341472310768,
+    "n": 27,
+    "nnz": 279
+  },
+  {
+    "matrix_name": "bcsstm12",
+    "matrix_group": "HB",
+    "norm": 6.23804168434634,
+    "n": 1473,
+    "nnz": 19659
+  },
+  {
+    "matrix_name": "bcsstk12",
+    "matrix_group": "HB",
+    "norm": 7.4984561511456045,
+    "n": 1473,
+    "nnz": 34241
+  },
+  {
+    "matrix_name": "bcsstk11",
+    "matrix_group": "HB",
+    "norm": 7.498541395196354,
+    "n": 1473,
+    "nnz": 34241
+  },
+  {
+    "matrix_name": "msc01050",
+    "matrix_group": "Boeing",
+    "norm": 7.6183059731104805,
+    "n": 1050,
+    "nnz": 29156
+  },
+  {
+    "matrix_name": "nasa2146",
+    "matrix_group": "Nasa",
+    "norm": 8.323856421734154,
+    "n": 2146,
+    "nnz": 72250
+  },
+  {
+    "matrix_name": "nasa2910",
+    "matrix_group": "Nasa",
+    "norm": 8.92525341641118,
+    "n": 2910,
+    "nnz": 174296
+  },
+  {
+    "matrix_name": "msc04515",
+    "matrix_group": "Boeing",
+    "norm": 8.968173893281454,
+    "n": 4515,
+    "nnz": 97707
+  },
+  {
+    "matrix_name": "Journals",
+    "matrix_group": "Pajek",
+    "norm": 9.11991194053637,
+    "n": 124,
+    "nnz": 12068
+  },
+  {
+    "matrix_name": "lund_b",
+    "matrix_group": "HB",
+    "norm": 10.190432381018319,
+    "n": 147,
+    "nnz": 2441
+  },
+  {
+    "matrix_name": "nos1",
+    "matrix_group": "HB",
+    "norm": 11.989162657526506,
+    "n": 237,
+    "nnz": 1017
+  },
+  {
+    "matrix_name": "msc01440",
+    "matrix_group": "Boeing",
+    "norm": 14.46483726010027,
+    "n": 1440,
+    "nnz": 46270
+  },
+  {
+    "matrix_name": "lund_a",
+    "matrix_group": "HB",
+    "norm": 18.528390162396963,
+    "n": 147,
+    "nnz": 2449
+  },
+  {
+    "matrix_name": "ex3",
+    "matrix_group": "FIDAP",
+    "norm": 20.709335564916692,
+    "n": 1821,
+    "nnz": 52685
+  },
+  {
+    "matrix_name": "ex9",
+    "matrix_group": "FIDAP",
+    "norm": 22.838406541589045,
+    "n": 3363,
+    "nnz": 99471
+  },
+  {
+    "matrix_name": "ex15",
+    "matrix_group": "FIDAP",
+    "norm": 23.68126126993236,
+    "n": 6867,
+    "nnz": 98671
+  },
+  {
+    "matrix_name": "bcsstk27",
+    "matrix_group": "HB",
+    "norm": 24.37649335846944,
+    "n": 1224,
+    "nnz": 56126
+  },
+  {
+    "matrix_name": "bcsstm07",
+    "matrix_group": "HB",
+    "norm": 25.425910313401506,
+    "n": 420,
+    "nnz": 7252
+  },
+  {
+    "matrix_name": "nasa1824",
+    "matrix_group": "Nasa",
+    "norm": 29.474648329967565,
+    "n": 1824,
+    "nnz": 39208
+  },
+  {
+    "matrix_name": "ex10hs",
+    "matrix_group": "FIDAP",
+    "norm": 31.289153492808904,
+    "n": 2548,
+    "nnz": 57308
+  },
+  {
+    "matrix_name": "ex33",
+    "matrix_group": "FIDAP",
+    "norm": 32.76362823691065,
+    "n": 1733,
+    "nnz": 22189
+  },
+  {
+    "matrix_name": "bcsstk06",
+    "matrix_group": "HB",
+    "norm": 34.20473913664238,
+    "n": 420,
+    "nnz": 7860
+  },
+  {
+    "matrix_name": "bcsstk07",
+    "matrix_group": "HB",
+    "norm": 34.2056636731414,
+    "n": 420,
+    "nnz": 7860
+  },
+  {
+    "matrix_name": "bcsstk26",
+    "matrix_group": "HB",
+    "norm": 37.654464930205066,
+    "n": 1922,
+    "nnz": 30336
+  },
+  {
+    "matrix_name": "ex10",
+    "matrix_group": "FIDAP",
+    "norm": 38.02553627771856,
+    "n": 2410,
+    "nnz": 54840
+  },
+  {
+    "matrix_name": "bcsstk15",
+    "matrix_group": "HB",
+    "norm": 44.641784458900595,
+    "n": 3948,
+    "nnz": 117816
+  },
+  {
+    "matrix_name": "nos2",
+    "matrix_group": "HB",
+    "norm": 47.96244928562321,
+    "n": 957,
+    "nnz": 4137
+  },
+  {
+    "matrix_name": "bcsstk13",
+    "matrix_group": "HB",
+    "norm": 48.189036221788065,
+    "n": 2003,
+    "nnz": 83883
+  },
+  {
+    "matrix_name": "bcsstk03",
+    "matrix_group": "HB",
+    "norm": 48.87296835059651,
+    "n": 112,
+    "nnz": 640
+  },
+  {
+    "matrix_name": "bcsstk01",
+    "matrix_group": "HB",
+    "norm": 55.96747632374491,
+    "n": 48,
+    "nnz": 400
+  },
+  {
+    "matrix_name": "LFAT5",
+    "matrix_group": "Oberwolfach",
+    "norm": 73.48497580620696,
+    "n": 14,
+    "nnz": 46
+  },
+  {
+    "matrix_name": "nasa4704",
+    "matrix_group": "Nasa",
+    "norm": 76.6690395737027,
+    "n": 4704,
+    "nnz": 104756
+  },
+  {
+    "matrix_name": "bcsstk14",
+    "matrix_group": "HB",
+    "norm": 98.24097266124107,
+    "n": 1806,
+    "nnz": 63454
+  },
+  {
+    "matrix_name": "bcsstk24",
+    "matrix_group": "HB",
+    "norm": 151.1713520365778,
+    "n": 3562,
+    "nnz": 159910
+  },
+  {
+    "matrix_name": "LF10",
+    "matrix_group": "Oberwolfach",
+    "norm": 155.87991299215656,
+    "n": 18,
+    "nnz": 82
+  },
+  {
+    "matrix_name": "bcsstk18",
+    "matrix_group": "HB",
+    "norm": 163.71855751638344,
+    "n": 11948,
+    "nnz": 149090
+  },
+  {
+    "matrix_name": "mhdb416",
+    "matrix_group": "Bai",
+    "norm": 167.66781030614055,
+    "n": 416,
+    "nnz": 2312
+  },
+  {
+    "matrix_name": "bcsstk19",
+    "matrix_group": "HB",
+    "norm": 180.87691889194903,
+    "n": 817,
+    "nnz": 6853
+  },
+  {
+    "matrix_name": "bcsstk08",
+    "matrix_group": "HB",
+    "norm": 187.8204815308023,
+    "n": 1074,
+    "nnz": 12960
+  },
+  {
+    "matrix_name": "bcsstk20",
+    "matrix_group": "HB",
+    "norm": 228.4607051035848,
+    "n": 485,
+    "nnz": 3135
+  },
+  {
+    "matrix_name": "mhd1280b",
+    "matrix_group": "Bai",
+    "norm": 432.6848457810585,
+    "n": 1280,
+    "nnz": 22778
+  },
+  {
+    "matrix_name": "sts4098",
+    "matrix_group": "Cannizzo",
+    "norm": 477.8852019734095,
+    "n": 4098,
+    "nnz": 72356
+  },
+  {
+    "matrix_name": "ex13",
+    "matrix_group": "FIDAP",
+    "norm": 995.8424207588075,
+    "n": 2568,
+    "nnz": 75628
+  },
+  {
+    "matrix_name": "mhd3200b",
+    "matrix_group": "Bai",
+    "norm": 1334.6072879092253,
+    "n": 3200,
+    "nnz": 18316
+  },
+  {
+    "matrix_name": "bcsstk23",
+    "matrix_group": "HB",
+    "norm": 1866.456603429405,
+    "n": 3134,
+    "nnz": 45178
+  },
+  {
+    "matrix_name": "mhd4800b",
+    "matrix_group": "Bai",
+    "norm": 2005.2638348625453,
+    "n": 4800,
+    "nnz": 27520
+  },
+  {
+    "matrix_name": "LFAT5000",
+    "matrix_group": "Oberwolfach",
+    "norm": 86585.21987149096,
+    "n": 19994,
+    "nnz": 79966
+  },
+  {
+    "matrix_name": "LF10000",
+    "matrix_group": "Oberwolfach",
+    "norm": 173187.76024937266,
+    "n": 19998,
+    "nnz": 99982
+  }
+]
