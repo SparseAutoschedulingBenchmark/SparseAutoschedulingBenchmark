@@ -1,7 +1,19 @@
 import argparse
 import time
 
-from .Benchmarks.Jacobi import benchmark_jacobi, dg_jacobi_sparse_small
+from .Benchmarks.Jacobi import (
+    benchmark_jacobi,
+    dg_jacobi_sparse_1,
+    dg_jacobi_sparse_2,
+    dg_jacobi_sparse_3,
+    dg_jacobi_sparse_4,
+    dg_jacobi_sparse_5,
+    dg_jacobi_sparse_6,
+    dg_jacobi_sparse_7,
+    dg_jacobi_sparse_8,
+    dg_jacobi_sparse_9,
+    dg_jacobi_sparse_10,
+)
 from .Benchmarks.MatMul import (
     benchmark_matmul,
     dg_matmul_dense_large,
@@ -21,7 +33,18 @@ DATA_GENERATOR_DICT = {
         "matmul_sparse_small": dg_matmul_sparse_small,
         "matmul_sparse_large": dg_matmul_sparse_large,
     },
-    "jacobi": {"jacobi_sparse_small": dg_jacobi_sparse_small},
+    "jacobi": {
+        "jacobi_sparse_1": dg_jacobi_sparse_1,
+        "jacobi_sparse_2": dg_jacobi_sparse_2,
+        "jacobi_sparse_3": dg_jacobi_sparse_3,
+        "jacobi_sparse_4": dg_jacobi_sparse_4,
+        "jacobi_sparse_5": dg_jacobi_sparse_5,
+        "jacobi_sparse_6": dg_jacobi_sparse_6,
+        "jacobi_sparse_7": dg_jacobi_sparse_7,
+        "jacobi_sparse_8": dg_jacobi_sparse_8,
+        "jacobi_sparse_9": dg_jacobi_sparse_9,
+        "jacobi_sparse_10": dg_jacobi_sparse_10,
+    },
 }
 
 
