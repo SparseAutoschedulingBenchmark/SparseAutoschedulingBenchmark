@@ -6,11 +6,18 @@ from SparseAutoschedulingBenchmark.Benchmarks.Jacobi import benchmark_jacobi
 from SparseAutoschedulingBenchmark.BinsparseFormat import BinsparseFormat
 from SparseAutoschedulingBenchmark.Frameworks.CheckerFramework import CheckerFramework
 from SparseAutoschedulingBenchmark.Frameworks.NumpyFramework import NumpyFramework
+from SparseAutoschedulingBenchmark.Frameworks.PyDataSparseFramework import PyDataSparseFramework
 
 
 @pytest.mark.parametrize(
     "xp, A, b, x",
     [
+        (
+            PyDataSparseFramework(),
+            np.array([[4.0, 1.0, 0.0], [1.0, 5.0, 2.0], [0.0, 2.0, 6.0]]),
+            np.array([5.0, 8.0, 8.0]),
+            np.zeros((3,)),
+        ),
         (
             NumpyFramework(),
             np.array([[4.0, 1.0, 0.0], [1.0, 5.0, 2.0], [0.0, 2.0, 6.0]]),
