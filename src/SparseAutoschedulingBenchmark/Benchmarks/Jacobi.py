@@ -1,6 +1,10 @@
+import os
+
 import numpy as np
 from scipy.io import mmread
 from scipy.sparse import random
+
+import ssgetpy
 
 from ..BinsparseFormat import BinsparseFormat
 
@@ -34,7 +38,7 @@ AI was used to debug code. This statement was written by hand.
 
 
 def benchmark_jacobi(
-    xp, A_bench, b_bench, x_bench, rel_tol=1e-8, abs_tol=1e-20, max_iters=1_000_000_000
+    xp, A_bench, b_bench, x_bench, rel_tol=1e-6, abs_tol=1e-20, max_iters=1000
 ):
     A = xp.lazy(xp.from_benchmark(A_bench))
     b = xp.lazy(xp.from_benchmark(b_bench))
@@ -67,14 +71,31 @@ def norm(xp, v):
     return xp.sqrt(xp.sum(xp.multiply(v, v)))
 
 
-def generate_jacobi_data(source, diag_modifier=1, has_b_file=False):
+def generate_jacobi_data(source, has_b_file=False):
+    matrices = ssgetpy.search(name=source)
+    if not matrices:
+        raise ValueError(f"No matrix found with name '{source}'")
+    matrix = matrices[0]
+    (path, archive) = matrix.download(extract=True)
+    matrix_path = os.path.join(path, matrix.name + ".mtx")
+    if matrix_path and os.path.exists(matrix_path):
+        A = mmread(matrix_path)
+    else:
+        raise FileNotFoundError(f"Matrix file not found at {matrix_path}")
     rng = np.random.default_rng(0)
-    A = mmread("./InputData/Jacobi/" + source + ".mtx")
     A = A.tocoo()
-    A.data[A.row == A.col] *= diag_modifier
 
     if has_b_file:
-        b = mmread("./InputData/Jacobi/" + source + "_b.mtx")
+        matrices = ssgetpy.search(name=(source + "_b"))
+        if not matrices:
+            raise ValueError(f"No matrix found with name '{source}'")
+        matrix = matrices[0]
+        (path, archive) = matrix.download(extract=True)
+        matrix_path = os.path.join(path, matrix.name + ".mtx")
+        if matrix_path and os.path.exists(matrix_path):
+            b = mmread(matrix_path)
+        else:
+            raise FileNotFoundError(f"Matrix file not found at {matrix_path}")
         b = b.flatten()
     else:
         x = random(
@@ -82,7 +103,6 @@ def generate_jacobi_data(source, diag_modifier=1, has_b_file=False):
         )
         b = A @ x
         b = b.toarray().flatten()
-
     x = np.zeros(A.shape[1])
 
     A_bin = BinsparseFormat.from_coo((A.row, A.col), A.data, A.shape)
@@ -91,49 +111,56 @@ def generate_jacobi_data(source, diag_modifier=1, has_b_file=False):
     return (A_bin, b_bin, x_bin)
 
 
-def dg_jacobi_sparse_small():
-    return generate_jacobi_data("nos1")
+def dg_jacobi_sparse_1():
+    return generate_jacobi_data("mesh3em5")  # nnz = 1,889
 
 
-def dg_jacobi_sparse_medium():
-    return generate_jacobi_data("poisson2D", has_b_file=True)
+def dg_jacobi_sparse_2():
+    return generate_jacobi_data("Trefethen_200")  # nnz = 2,873
 
 
-def dg_jacobi_sparse_large():
-    return generate_jacobi_data("nos6")
+def dg_jacobi_sparse_3():
+    return generate_jacobi_data("Chem97ZtZ")  # nnz = 7,361
 
 
-# The small and large datasets take over 10,000,000 iterations to converge
-# with the default tolerance, so we modify the diagonal to make them
-# converge faster for benchmarking purposes
+def dg_jacobi_sparse_4():
+    return generate_jacobi_data("Trefethen_500")  # nnz = 8,478
 
 
-def dg_jacobi_sparse_small_fast():
-    return generate_jacobi_data("nos1", diag_modifier=1.1)
+def dg_jacobi_sparse_5():
+    return generate_jacobi_data("Trefethen_700")  # nnz = 12,654
 
 
-def dg_jacobi_sparse_large_fast():
-    return generate_jacobi_data("nos6", diag_modifier=1.1)
+def dg_jacobi_sparse_6():
+    return generate_jacobi_data("fv1")  # nnz = 85,264
 
 
-def check_convergence(A):
-    A = A.tocsr()
-    diag = np.abs(A.diagonal())
-    off_diag_sum = np.abs(A).sum(axis=1).A1 - diag
-    is_diag_dom = diag > off_diag_sum
-    if np.all(is_diag_dom):
-        print("Matrix is diagonally dominant: True")
-    else:
-        print("Matrix is diagonally dominant: False")
-    print("Minimum diagonal dominance ratio:")
-    print(np.min(diag / (off_diag_sum)))
+def dg_jacobi_sparse_7():
+    return generate_jacobi_data("fv2")  # nnz = 87,025
 
 
-def spectral_radius_iteration_matrix(A):
-    # Jacobi iteration matrix: M = -D^(-1)(L+U) = -D^(-1)(A-D) = -D^(-1)A - I
-    A = A.tocsr()
-    D_inv = np.diag(1.0 / A.diagonal())
-    M = -(D_inv @ A.toarray() - np.eye(A.shape[0]))
-    vals = np.linalg.eigvals(M)
-    print("Spectral radius of Jacobi iteration matrix:")
-    print(np.max(np.abs(vals)))
+def dg_jacobi_sparse_8():
+    return generate_jacobi_data("obstclae")  # nnz = 197,608
+
+
+def dg_jacobi_sparse_9():
+    return generate_jacobi_data("minsurfo")  # nnz = 203,622
+
+
+def dg_jacobi_sparse_10():
+    return generate_jacobi_data("Trefethen_20000")  # nnz = 554,466
+
+
+# Matrices below run extremely slowly on numpy framework (>1 minutes per convergence):
+
+# def dg_jacobi_sparse_11():
+#     return generate_jacobi_data("jnlbrng1") #nnz = 199,200
+
+# def dg_jacobi_sparse_12():
+#     return generate_jacobi_data("shallow_water1") #nnz = 327,680
+
+# def dg_jacobi_sparse_13():
+#     return generate_jacobi_data("shallow_water2") #nnz = 327,680
+
+# def dg_jacobi_sparse_14():
+#     return generate_jacobi_data("finan512") #nnz = 596,992
