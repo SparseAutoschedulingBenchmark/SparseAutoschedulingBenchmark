@@ -1,5 +1,7 @@
 import numpy as np
 
+import sparse as sp
+
 from SparseAutoschedulingBenchmark.Benchmarks.MatMul import (
     benchmark_matmul,
     dg_matmul_dense_small,
@@ -7,6 +9,9 @@ from SparseAutoschedulingBenchmark.Benchmarks.MatMul import (
 from SparseAutoschedulingBenchmark.BinsparseFormat import BinsparseFormat
 from SparseAutoschedulingBenchmark.Frameworks.CheckerFramework import CheckerFramework
 from SparseAutoschedulingBenchmark.Frameworks.NumpyFramework import NumpyFramework
+from SparseAutoschedulingBenchmark.Frameworks.PyDataSparseFramework import (
+    PyDataSparseFramework,
+)
 
 
 def test_numpy_framework():
@@ -34,6 +39,42 @@ def test_numpy_framework():
     expected_sparse = np.zeros(shape, dtype=np.float32)
     expected_sparse[row, col] = data
     assert np.array_equal(expected_sparse, arr_sparse_converted), (
+        "Sparse array conversion failed"
+    )
+
+    bsf_sparse_converted = BinsparseFormat.to_coo(
+        framework.to_benchmark(arr_sparse_converted)
+    )
+    assert bsf_sparse == bsf_sparse_converted, "Sparse array to_benchmark failed"
+
+
+def test_pydata_sparse_framework():
+    framework = PyDataSparseFramework()
+
+    # Dense array test
+    arr = np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float32)
+    bsf = BinsparseFormat.from_numpy(arr)
+    arr_converted = framework.from_benchmark(bsf)
+    assert np.array_equal(arr, sp.asnumpy(arr_converted)), (
+        "Dense array conversion failed"
+    )
+
+    bsf_converted = framework.to_benchmark(arr_converted)
+    assert BinsparseFormat.to_coo(bsf) == BinsparseFormat.to_coo(bsf_converted), (
+        "Dense array to_benchmark failed"
+    )
+
+    # Sparse array test (COO format)
+    row = np.array([0, 1, 2])
+    col = np.array([0, 2, 1])
+    data = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+    shape = (3, 3)
+    bsf_sparse = BinsparseFormat.from_coo((row, col), data, shape)
+    arr_sparse_converted = framework.from_benchmark(bsf_sparse)
+
+    expected_sparse = np.zeros(shape, dtype=np.float32)
+    expected_sparse[row, col] = data
+    assert np.array_equal(expected_sparse, sp.asnumpy(arr_sparse_converted)), (
         "Sparse array conversion failed"
     )
 

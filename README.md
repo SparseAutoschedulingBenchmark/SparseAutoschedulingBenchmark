@@ -13,3 +13,5 @@ to install the current project and dev dependencies.
 
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines, development setup, and best practices.
+
+Most importantly: Before implementing a benchmark, claim it! File a github issue describing which application you want to benchmark, include links to relevant source code, and assign yourself to the issue if possible so that others know you're working on that benchmark.
