@@ -58,3 +58,8 @@ section-order = [
 [tool.mypy]
 ignore_missing_imports = true
 exclude = ["tests/reference"]
+
+[dependency-groups]
+dev = [
+    "ssgetpy (>=1.0rc2,<2.0)"
+]
