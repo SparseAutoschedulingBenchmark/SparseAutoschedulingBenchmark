@@ -28,14 +28,14 @@ function bfs(edges,src)
     @assert n == m
 
     G = Tensor(Dense(SparseList(Element(false))), edges)
-    
+
     visited = Tensor(SparseByteMap(Pattern()), n)
     frontier = Tensor(SparseByteMap(Pattern()), n)
     @finch frontier[src] = true
 
     level_idx = 1
     level = Tensor(Dense(Element(0)), n)
-    
+
     fnz_count = Scalar(1)
     while fnz_count[] > 0
         @einsum level[i] = level[i] | (frontier[i] * level_idx)
@@ -205,7 +205,7 @@ end
 
 function vertex_betweeness_centrality(edges)
     """
-        Implementation of Brandes algorithm. Returns a list of vertex betweeness 
+        Implementation of Brandes algorithm. Returns a list of vertex betweeness
         centralities for each vertex in the graph.
     """
     (n, m) = size(edges)
@@ -258,9 +258,9 @@ end
 #region Tests
 function bfs_test()
     input_src = 1
-    input_edges =  [   
-        0 1 1 0 0 0; 
-        0 0 1 1 0 0; 
+    input_edges =  [
+        0 1 1 0 0 0;
+        0 0 1 1 0 0;
         0 0 0 0 1 0;
         0 0 0 0 0 0;
         0 0 0 0 0 1;
@@ -272,9 +272,9 @@ function bfs_test()
 end
 
 function bellman_ford_test()
-    input_edges = [   
-        0   1   5   Inf Inf Inf; 
-        Inf 0   3   12  Inf Inf; 
+    input_edges = [
+        0   1   5   Inf Inf Inf;
+        Inf 0   3   12  Inf Inf;
         Inf Inf 0   Inf 2   Inf;
         Inf Inf Inf 0   Inf Inf;
         Inf Inf Inf Inf 0   2;
@@ -287,9 +287,9 @@ function bellman_ford_test()
 end
 
 function floyd_warshall_test()
-    input_edges = [   
-        0   1   5   Inf Inf Inf; 
-        Inf 0   3   12  Inf Inf; 
+    input_edges = [
+        0   1   5   Inf Inf Inf;
+        Inf 0   3   12  Inf Inf;
         Inf Inf 0   Inf 2   Inf;
         Inf Inf Inf 0   Inf Inf;
         Inf Inf Inf Inf 0   2;
@@ -297,7 +297,7 @@ function floyd_warshall_test()
     ]
 
     expected_out = Tensor(
-        Dense(Dense(Element(Inf))), 
+        Dense(Dense(Element(Inf))),
         [
             0   1   4   10  6   8;
             Inf 0   3   9   5   7;
@@ -311,9 +311,9 @@ function floyd_warshall_test()
 end
 
 function transitive_closure_test()
-    input_edges = [   
-        0 1 1 0 0 0; 
-        0 0 1 1 0 0; 
+    input_edges = [
+        0 1 1 0 0 0;
+        0 0 1 1 0 0;
         0 0 0 0 1 0;
         0 0 0 0 0 0;
         0 0 0 0 0 1;
@@ -321,10 +321,10 @@ function transitive_closure_test()
     ]
 
     expected_out = Tensor(
-        Dense(Dense(Element(false))), 
+        Dense(Dense(Element(false))),
         [
-            1 1 1 1 1 1; 
-            0 1 1 1 1 1; 
+            1 1 1 1 1 1;
+            0 1 1 1 1 1;
             0 0 1 1 1 1;
             0 0 0 1 0 0;
             0 0 0 1 1 1;
@@ -335,7 +335,7 @@ function transitive_closure_test()
 end
 
 function scc_test()
-    input_edges = [   
+    input_edges = [
         0 1 0 0 0 0 0 0;
         0 0 1 0 1 1 0 0;
         0 0 0 1 0 0 1 0;
@@ -368,7 +368,7 @@ function scc_test()
 end
 
 function page_rank_test()
-    input_edges = [   
+    input_edges = [
         0 1 1 0;
         0 0 1 0;
         1 0 0 0;
@@ -387,7 +387,7 @@ function page_rank_test()
 end
 
 function markov_cluster_test()
-    input_edges = [   
+    input_edges = [
         0 1 1 1 0 0 0 0
         1 0 0 0 0 0 0 0
         1 0 0 0 0 0 0 0
@@ -398,7 +398,7 @@ function markov_cluster_test()
         0 0 0 0 1 0 0 0
     ]
     expected_out = 2
-    
+
     res = markov_clustering(input_edges,2,2,1e-6)
     # Counting the number of strongly connected components
     processed_dict = Dict{Int, Bool}()
