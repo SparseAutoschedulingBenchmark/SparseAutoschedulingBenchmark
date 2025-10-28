@@ -27,5 +27,9 @@ class AbstractFramework(ABC):
         pass
 
     @abstractmethod
+    def with_fill_value(self, array, value):
+        pass
+
+    @abstractmethod
     def __getattr__(self, name):
         pass
