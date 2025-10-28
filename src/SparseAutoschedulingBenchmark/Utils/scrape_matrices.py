@@ -16,7 +16,9 @@ from scipy.sparse.linalg._eigen.arpack import ArpackError
 import ssgetpy
 
 
-def append_to_json(filename, matrix_name, matrix_group, convergence_value, n, nnz):
+def append_to_json(
+    filename, matrix_name, matrix_group, convergence_value, n, nnz, solver
+):
     """Append matrix name and convergence criteria to JSON file."""
     # Try to load existing data, or create empty list if file doesn't exist
     try:
@@ -30,13 +32,13 @@ def append_to_json(filename, matrix_name, matrix_group, convergence_value, n, nn
         {
             "matrix_name": matrix_name,
             "matrix_group": matrix_group,
-            "convergence criteria": convergence_value,
+            f"{solver} convergence criteria": convergence_value,
             "n": n,
             "nnz": nnz,
         }
     )
 
-    data.sort(key=lambda x: x["convergence criteria"])
+    data.sort(key=lambda x: x[f"{solver} convergence criteria"])
 
     # Write back to file
     with open(filename, "w") as f:
@@ -58,14 +60,27 @@ def check_jacobi_iteration_matrix_convergence(A):
     D = sp.sparse.diags(1 / d, format="csr")
     M = -(D @ A - sp.sparse.eye(A.shape[0]))
 
-    vals = sp.sparse.linalg.eigs(M, tol=0.001)
-    print()
-    sr_value = np.max(np.abs(vals[0]))
+    vals = sp.sparse.linalg.eigsh(M, k=1, return_eigenvectors=False, tol=0.001)
+    sr_value = np.max(vals[0])
     print(f"SR of (A-D)/D: {sr_value}")
     return sr_value
 
 
-SOLVER_DICT = {"jacobi": check_jacobi_iteration_matrix_convergence}
+def check_cg_iteration_matrix_convergence_speed(A):
+    max_eig = sp.sparse.linalg.eigsh(A, k=1, return_eigenvectors=False, tol=0.001)[0]
+    min_eig = sp.sparse.linalg.eigsh(
+        A, k=1, sigma=0, return_eigenvectors=False, tol=0.001
+    )[0]
+
+    condition_num = max_eig / min_eig
+    print(f"Condition number of A: {condition_num}")
+    return condition_num
+
+
+SOLVER_DICT = {
+    "jacobi": check_jacobi_iteration_matrix_convergence,
+    "cg": check_cg_iteration_matrix_convergence_speed,
+}
 
 
 def main():
@@ -91,7 +106,7 @@ def main():
         "--solver",
         type=str,
         default="jacobi",
-        choices=["jacobi"],
+        choices=["jacobi", "cg"],
         help="Solver to check convergence for",
     )
     args = parser.parse_args()
@@ -131,6 +146,7 @@ def main():
                     float(convergence_value),
                     n,
                     A.nnz,
+                    args.solver,
                 )
                 print(f"Saved {matrix.name} convergence criteria to {output_file}")
 
