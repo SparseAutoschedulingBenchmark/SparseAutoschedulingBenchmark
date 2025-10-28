@@ -29,8 +29,8 @@ Hand-written code modelling the algorithm structure outlined in:
 https://www.cs.princeton.edu/~appel/papers/jacobi.pdf and
 https://courses.grainger.illinois.edu/cs357/su2014/lectures/lecture10.pdf
 Data Generation:
-Data collected from SuiteSparse Matrix Collection consisting of positive
-semidefinite matrices whose Jacobi iteration matrices have spectral radius < 1.
+Data collected from SuiteSparse Matrix Collection consisting of symmetric positive
+definite matrices whose Jacobi iteration matrices have spectral radius < 1.
 Statement on the use of Generative AI:
 No generative AI was used to write the benchmark function itself. Generative
 AI was used to debug code. This statement was written by hand.
@@ -86,16 +86,13 @@ def generate_jacobi_data(source, has_b_file=False):
     A = A.tocoo()
 
     if has_b_file:
-        matrices = ssgetpy.search(name=(source + "_b"))
-        if not matrices:
-            raise ValueError(f"No matrix found with name '{source}'")
-        matrix = matrices[0]
-        (path, archive) = matrix.download(extract=True)
-        matrix_path = os.path.join(path, matrix.name + ".mtx")
+        matrix_path = os.path.join(path, matrix.name + "_b.mtx")
         if matrix_path and os.path.exists(matrix_path):
             b = mmread(matrix_path)
         else:
             raise FileNotFoundError(f"Matrix file not found at {matrix_path}")
+        if not isinstance(b, np.ndarray):
+            b = b.toarray() if hasattr(b, "toarray") else np.asarray(b)
         b = b.flatten()
     else:
         x = random(

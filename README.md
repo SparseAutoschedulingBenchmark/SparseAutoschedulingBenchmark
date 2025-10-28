@@ -12,6 +12,8 @@ poetry install --with test
 to install the current project and dev dependencies.
 
 ## Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines, development setup, and best practices.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for software guidelines, development setup, and best practices.
+
+To understand the motivation, practices, and policies of this research effort, consult the [policy doc](https://docs.google.com/document/d/1N5gElU3Z_URG-K4HTdLlf_H1lpI42dH9xVdeBs4ierA/edit?usp=sharing)
 
 Most importantly: Before implementing a benchmark, claim it! File a github issue describing which application you want to benchmark, include links to relevant source code, and assign yourself to the issue if possible so that others know you're working on that benchmark.
