@@ -67,29 +67,24 @@ def benchmark_cp_als(xp, X_bench, rank, max_iter=50):
     dim1, dim2, dim3 = X_bench.data["shape"]
     dtype = X_bench.data["values"].dtype
 
-    A = xp.lazy(
-        xp.from_benchmark(
-            BinsparseFormat.from_numpy(
-                np.random.default_rng(0).random((dim1, rank)).astype(dtype)
-            )
+    A = xp.from_benchmark(
+        BinsparseFormat.from_numpy(
+            np.random.default_rng(0).random((dim1, rank)).astype(dtype)
         )
     )
-    B = xp.lazy(
-        xp.from_benchmark(
-            BinsparseFormat.from_numpy(
-                np.random.default_rng(0).random((dim2, rank)).astype(dtype)
-            )
+    B = xp.from_benchmark(
+        BinsparseFormat.from_numpy(
+            np.random.default_rng(0).random((dim2, rank)).astype(dtype)
         )
     )
-    C = xp.lazy(
-        xp.from_benchmark(
-            BinsparseFormat.from_numpy(
-                np.random.default_rng(0).random((dim3, rank)).astype(dtype)
-            )
+    C = xp.from_benchmark(
+        BinsparseFormat.from_numpy(
+            np.random.default_rng(0).random((dim3, rank)).astype(dtype)
         )
     )
 
     for _iteration in range(max_iter):
+        (A, B, C) = xp.lazy((A, B, C))
         # Update A
         mttkrp_result = xp.einsum(
             "mttkrp_result[i, r] += X[i, j, k] * B[j, r] * C[k, r]", X=X, B=B, C=C
@@ -97,10 +92,8 @@ def benchmark_cp_als(xp, X_bench, rank, max_iter=50):
         CtC = xp.einsum("CtC[r, s] += C[k, r] * C[k, s]", C=C)
         BtB = xp.einsum("BtB[r, s] += B[j, r] * B[j, s]", B=B)
         G = xp.multiply(CtC, BtB)
-        G_pinv = xp.lazy(
-            xp.from_benchmark(BinsparseFormat.from_numpy(np.linalg.pinv(xp.compute(G))))
-        )
-        A = xp.lazy(xp.matmul(mttkrp_result, G_pinv))
+        G_pinv = xp.linalg.pinv(G)
+        A = xp.matmul(mttkrp_result, G_pinv)
 
         # Update B
         mttkrp_result = xp.einsum(
@@ -108,10 +101,8 @@ def benchmark_cp_als(xp, X_bench, rank, max_iter=50):
         )
         AtA = xp.einsum("AtA[r, s] += A[i, r] * A[i, s]", A=A)
         G = xp.multiply(CtC, AtA)
-        G_pinv = xp.lazy(
-            xp.from_benchmark(BinsparseFormat.from_numpy(np.linalg.pinv(xp.compute(G))))
-        )
-        B = xp.lazy(xp.matmul(mttkrp_result, G_pinv))
+        G_pinv = xp.linalg.pinv(G)
+        B = xp.matmul(mttkrp_result, G_pinv)
 
         # Update C
         mttkrp_result = xp.einsum(
@@ -119,10 +110,12 @@ def benchmark_cp_als(xp, X_bench, rank, max_iter=50):
         )
         BtB = xp.einsum("BtB[r, s] += B[j, r] * B[j, s]", B=B)
         G = xp.multiply(BtB, AtA)
-        G_pinv = xp.lazy(
-            xp.from_benchmark(BinsparseFormat.from_numpy(np.linalg.pinv(xp.compute(G))))
-        )
-        C = xp.lazy(xp.matmul(mttkrp_result, G_pinv))
+        G_pinv = xp.linalg.pinv(G)
+        C = xp.matmul(mttkrp_result, G_pinv)
+
+        A, B, C = xp.compute((A, B, C))
+
+    (A, B, C) = xp.lazy((A, B, C))
 
     # Normalizing factors
     A_norms_sq = xp.einsum("norms[r] += A[i, r] * A[i, r]", A=A)
@@ -146,21 +139,19 @@ def benchmark_cp_als(xp, X_bench, rank, max_iter=50):
     B_norms_safe = xp.maximum(B_norms_2d, eps)
     C_norms_safe = xp.maximum(C_norms_2d, eps)
 
-    A_normalized_lazy = xp.divide(A, A_norms_safe)
-    B_normalized_lazy = xp.divide(B, B_norms_safe)
-    C_normalized_lazy = xp.divide(C, C_norms_safe)
+    A = xp.divide(A, A_norms_safe)
+    B = xp.divide(B, B_norms_safe)
+    C = xp.divide(C, C_norms_safe)
 
     # Now compute everything at once
-    A_normalized = xp.compute(A_normalized_lazy)
-    B_normalized = xp.compute(B_normalized_lazy)
-    C_normalized = xp.compute(C_normalized_lazy)
-    lambda_computed = xp.compute(lambda_vals)
+
+    (A, B, C, lambda_vals) = xp.compute((A, B, C, lambda_vals))
 
     # Convert to binsparse format
-    A_bench_out = xp.to_benchmark(A_normalized)
-    B_bench_out = xp.to_benchmark(B_normalized)
-    C_bench_out = xp.to_benchmark(C_normalized)
-    lambda_bench_out = xp.to_benchmark(lambda_computed)
+    A_bench_out = xp.to_benchmark(A)
+    B_bench_out = xp.to_benchmark(B)
+    C_bench_out = xp.to_benchmark(C)
+    lambda_bench_out = xp.to_benchmark(lambda_vals)
 
     return (A_bench_out, B_bench_out, C_bench_out, lambda_bench_out)
 
