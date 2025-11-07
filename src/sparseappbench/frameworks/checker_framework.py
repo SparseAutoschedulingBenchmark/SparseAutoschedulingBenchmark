@@ -1,6 +1,6 @@
-from ..BinsparseFormat import BinsparseFormat
-from .AbstractFramework import AbstractFramework
-from .NumpyFramework import NumpyFramework
+from ..binsparse_format import BinsparseFormat
+from .abstract_framework import AbstractFramework
+from .numpy_framework import NumpyFramework
 
 
 def unwrap(x):
