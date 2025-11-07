@@ -13,7 +13,7 @@ Once you're on board, see [CONTRIBUTING.md](CONTRIBUTING.md) for software guidel
 
 ## Installation
 
-SparseAutoschedulingBenchmark uses [poetry](https://python-poetry.org/) for packaging. To install for
+SparseApplicationBenchmark uses [poetry](https://python-poetry.org/) for packaging. To install for
 development, clone the repository and run:
 ```bash
 poetry install --with test
