@@ -6,7 +6,7 @@ from scipy.sparse import random
 
 import ssgetpy
 
-from ..BinsparseFormat import BinsparseFormat
+from ..binsparse_format import BinsparseFormat
 
 """
 Name: Jacobi Iterative Solver

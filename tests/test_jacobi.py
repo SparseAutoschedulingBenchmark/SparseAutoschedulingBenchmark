@@ -2,11 +2,11 @@ import pytest
 
 import numpy as np
 
-from SparseAutoschedulingBenchmark.Benchmarks.Jacobi import benchmark_jacobi
-from SparseAutoschedulingBenchmark.BinsparseFormat import BinsparseFormat
-from SparseAutoschedulingBenchmark.Frameworks.CheckerFramework import CheckerFramework
-from SparseAutoschedulingBenchmark.Frameworks.NumpyFramework import NumpyFramework
-from SparseAutoschedulingBenchmark.Frameworks.PyDataSparseFramework import (
+from sparseappbench.benchmarks.jacobi import benchmark_jacobi
+from sparseappbench.binsparse_format import BinsparseFormat
+from sparseappbench.frameworks.checker_framework import CheckerFramework
+from sparseappbench.frameworks.numpy_framework import NumpyFramework
+from sparseappbench.frameworks.sparse_framework import (
     PyDataSparseFramework,
 )
 
