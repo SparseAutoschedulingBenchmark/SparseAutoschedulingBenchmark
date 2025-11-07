@@ -1,3 +1,3 @@
-import SparseAutoschedulingBenchmark as autobench
+import sparseappbench as autobench
 
 autobench.main()

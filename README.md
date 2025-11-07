@@ -19,4 +19,3 @@ development, clone the repository and run:
 poetry install --with test
 ```
 to install the current project and dev dependencies.
-

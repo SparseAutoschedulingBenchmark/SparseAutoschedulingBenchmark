@@ -34,7 +34,7 @@ used to debug some parts of the code. This statement was written by hand.
 
 import numpy as np
 
-from ..BinsparseFormat import BinsparseFormat
+from ..binsparse_format import BinsparseFormat
 
 """
 benchmark_cp_als(xp, X_bench, rank, max_iter)

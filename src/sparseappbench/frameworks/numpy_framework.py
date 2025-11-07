@@ -1,7 +1,7 @@
 import numpy as np
 
-from ..BinsparseFormat import BinsparseFormat
-from .AbstractFramework import AbstractFramework
+from ..binsparse_format import BinsparseFormat
+from .abstract_framework import AbstractFramework
 from .einsum import einsum
 
 
