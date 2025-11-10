@@ -1,8 +1,8 @@
 import numpy as np
 
-from SparseAutoschedulingBenchmark.Benchmarks.BFS import benchmark_bfs
-from SparseAutoschedulingBenchmark.BinsparseFormat import BinsparseFormat
-from SparseAutoschedulingBenchmark.Frameworks.NumpyFramework import NumpyFramework
+from sparseappbench.benchmarks.BFS import benchmark_bfs
+from sparseappbench.binsparse_format import BinsparseFormat
+from sparseappbench.frameworks.numpy_framework import NumpyFramework
 
 
 def test_bfs_basic():
