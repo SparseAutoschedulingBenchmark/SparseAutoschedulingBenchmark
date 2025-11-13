@@ -1,7 +1,7 @@
 import argparse
 import time
 
-from .Benchmarks.CG import (
+from .benchmarks.cg import (
     benchmark_cg,
     dg_cg_sparse_1,
     dg_cg_sparse_2,
@@ -12,7 +12,7 @@ from .Benchmarks.CG import (
     dg_cg_sparse_7,
     dg_cg_sparse_8,
 )
-from .Benchmarks.Jacobi import (
+from .benchmarks.jacobi import (
     benchmark_jacobi,
     dg_jacobi_sparse_1,
     dg_jacobi_sparse_2,
@@ -23,15 +23,15 @@ from .Benchmarks.Jacobi import (
     dg_jacobi_sparse_7,
     dg_jacobi_sparse_8,
 )
-from .Benchmarks.MatMul import (
+from .benchmarks.matmul import (
     benchmark_matmul,
     dg_matmul_dense_large,
     dg_matmul_dense_small,
     dg_matmul_sparse_large,
     dg_matmul_sparse_small,
 )
-from .Frameworks.CheckerFramework import CheckerFramework
-from .Frameworks.NumpyFramework import NumpyFramework
+from .frameworks.checker_framework import CheckerFramework
+from .frameworks.numpy_framework import NumpyFramework
 
 FRAMEWORK_DICT = {"numpy": NumpyFramework(), "checker": CheckerFramework()}
 BENCHMARK_DICT = {

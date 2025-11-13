@@ -2,7 +2,7 @@ import pytest
 
 import numpy as np
 
-from SparseAutoschedulingBenchmark.Frameworks.NumpyFramework import NumpyFramework
+from sparseappbench.frameworks.numpy_framework import NumpyFramework
 
 
 @pytest.fixture

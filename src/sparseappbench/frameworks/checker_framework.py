@@ -1,6 +1,6 @@
-from ..BinsparseFormat import BinsparseFormat
-from .AbstractFramework import AbstractFramework
-from .NumpyFramework import NumpyFramework
+from ..binsparse_format import BinsparseFormat
+from .abstract_framework import AbstractFramework
+from .numpy_framework import NumpyFramework
 
 
 def unwrap(x):
@@ -331,10 +331,14 @@ class CheckerFramework(AbstractFramework):
             )
         return BinsparseFormat.from_numpy(unwrap(array))
 
-    def lazy(self, array: CheckerTensor):
+    def lazy(self, array: CheckerTensor | tuple[CheckerTensor, ...]):
+        if isinstance(array, tuple):
+            return tuple(LazyCheckerTensor(self, arr) for arr in array)
         return LazyCheckerTensor(self, array)
 
-    def compute(self, array: CheckerTensor):
+    def compute(self, array: CheckerTensor | tuple[CheckerTensor, ...]):
+        if isinstance(array, tuple):
+            return tuple(EagerCheckerTensor(self, arr) for arr in array)
         return EagerCheckerTensor(self, array)
 
     def einsum(self, prgm, **kwargs):
@@ -344,4 +348,6 @@ class CheckerFramework(AbstractFramework):
         return CheckerOperator(self, self.xp.with_fill_value)(array, value)
 
     def __getattr__(self, name):
+        if name == "linalg":
+            return CheckerFramework(self.xp.linalg)
         return CheckerOperator(self, getattr(self.xp, name))
