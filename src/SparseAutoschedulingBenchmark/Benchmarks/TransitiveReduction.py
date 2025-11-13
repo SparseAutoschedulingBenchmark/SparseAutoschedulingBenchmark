@@ -1,6 +1,6 @@
 """
 Name: diBELLA Transitive Reduction Algorithm
-Author: Jaehun Baek and Aaryan Tomar
+Author: Jaehun Baek
 Email: jbaek90@gatech.edu
 Motivation:
 This algorithm implements the iterative transitive reduction (TO-DO: Add significance of algorithm)
@@ -20,7 +20,7 @@ This statement was written by hand.
 import numpy as np
 from ..BinsparseFormat import BinsparseFormat
 
-def transitive_reduction(xp, R_bench, max_iters = 10):
+def transitive_reduction(xp, R_bench, x=1, max_iters = 10):
     """
     Performs iterative transitive reduction on a sparse overlap graph R
 
@@ -38,8 +38,12 @@ def transitive_reduction(xp, R_bench, max_iters = 10):
     R_eager = xp.from_benchmark(R_bench)
     R = xp.lazy(R_eager)
     R_nnz_prev = xp.compute(xp.sum(R_eager != 0))[()]
-    for i in range(len(max_iters)):
+    for i in range(max_iters):
         R_plus = xp.with_fill_value(R, np.inf)
+
+        # handle dense arrays (Numpy) where 0 must be converted to inf
+        # without this, 0s act as valid edges with 0 weight
+        R_plus = xp.where(R == 0, np.inf, R_plus)
         
         # N <- R ^ 2 in Algo 2 that uses custom MinPlus semiring
         # expressed through einsum- R[i, k] + R[k, j] iterates over all intermediate nodes k, 
@@ -47,7 +51,10 @@ def transitive_reduction(xp, R_bench, max_iters = 10):
         N = xp.einsum("N[i, j] min= R[i, k] + R[k, j]", R=R_plus)
 
         v = xp.max(R, axis=1)
-        # v <- v.APPLY(x.add)
+        
+        # reason to add this scalar value across all nonzero value is 
+        # to make algorithm 'robust to sequencing error' (page 5)
+        v = v + x 
 
         # Build M matrix
         v_expanded = xp.expand_dims(v, axis=1)
@@ -55,7 +62,7 @@ def transitive_reduction(xp, R_bench, max_iters = 10):
         R_bool = R != 0
         M = xp.where(R_bool, M_dense, 0)
 
-        N_bool = xp.logical_and(N != 0, N != inf)
+        N_bool = xp.logical_and(N != 0, N != np.inf)
         common_sparsity = xp.logical_and(R_bool, N_bool)
         is_transitive = M >= N
         I = xp.logical_and(common_sparsity, is_transitive)
