@@ -1,19 +1,28 @@
 """
 Name: Breadth-First Search (BFS)
-
 Co-Authors: Aarav Joglekar, Joel Mathew Cherian
+Email: ajoglekar32@gatech.edu
 
-Reference:
+Motivation: The Bredth-First Search algorithm is an important graph traversal technique
+used to epxlore vertices by layers. It is a fundamental building block for more complex
+graph algorithms, especially in areas like parallel processing and high-performance
+computing. It is often parallelized to run on GPUs for speed.
+
+Role of sparsity:
+In standard BFS, algorithms on sparse graphs are faster because they process fewer
+edges, and specialized algebraic methods use sparsity to avoid unnecessary computations
+by focusing only on non-zero elements. Optimizing the use of sparse data structures and
+algorithms is key to achieving high performance, as it reduces memory footprint and
+leads to faster traversals.
+
+Implementation Reference:
 J. Kepner and J. Gilbert (eds.), “Graph Algorithms in the Language of Linear Algebra,”
 Society for Industrial and Applied Mathematics (SIAM), Philadelphia, 2011.
 
-Motivation:
-This benchmark expresses the BFS algorithm as linear algebra operations using einsums.
-It was translated from the Julia Finch Einsum implementation.
-
-Statement on the use of Generative AI:
-No generative AI was used to write the benchmark function itself. Generative AI was used
-to assist in translation and code explanation. This statement was written by hand.
+Data Generation:
+Graphs for this benchmark may be created manually for testing or generated
+procedurally using a Graph500-style R-MAT model. Generated adjacency matrices
+are converted into the benchmark format with BinsparseFormat.from_numpy().
 """
 
 
@@ -31,6 +40,11 @@ def benchmark_bfs(xp, adjacency_matrix, source):
     level = xp.zeros((n,), dtype=int)
     level_idx = 1
     frontier_count = 1
+
+    edges = xp.lazy(edges)
+    visited = xp.lazy(visited)
+    frontier = xp.lazy(frontier)
+    level = xp.lazy(level)
     while frontier_count > 0:
         level = xp.where(frontier, level_idx, level)
         visited = xp.logical_or(visited, frontier)
@@ -38,6 +52,10 @@ def benchmark_bfs(xp, adjacency_matrix, source):
             "frontier[j] += edges[i,j] * frontier[i]", edges=edges, frontier=frontier
         )
         frontier = xp.logical_and(frontier, xp.logical_not(visited))
+        visited = xp.compute(visited)
+        frontier = xp.compute(frontier)
+        level = xp.compute(level)
         frontier_count = xp.sum(frontier)
+        frontier_count = xp.compute(frontier_count)
         level_idx += 1
     return xp.to_benchmark(level)
