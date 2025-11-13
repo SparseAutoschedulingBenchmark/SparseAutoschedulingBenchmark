@@ -18,7 +18,7 @@ No generative AI was used to construct the benchmark function.
 This statement was written by hand.  
 """
 import numpy as np
-from ..BinsparseFormat import BinsparseFormat
+from ..binsparse_format import BinsparseFormat
 
 def transitive_reduction(xp, R_bench, x=1, max_iters = 10):
     """
