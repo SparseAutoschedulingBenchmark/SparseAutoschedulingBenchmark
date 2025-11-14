@@ -12,6 +12,12 @@ from .Benchmarks.CG import (
     dg_cg_sparse_7,
     dg_cg_sparse_8,
 )
+from .Benchmarks.CP_ALS import (
+    benchmark_cp_als,
+    dg_cp_als_darpa,
+    dg_cp_als_factorizable_small,
+    dg_cp_als_sparse_small,
+)
 from .Benchmarks.Jacobi import (
     benchmark_jacobi,
     dg_jacobi_sparse_1,
@@ -38,6 +44,7 @@ BENCHMARK_DICT = {
     "matmul": benchmark_matmul,
     "jacobi": benchmark_jacobi,
     "cg": benchmark_cg,
+    "cp_als": benchmark_cp_als,
 }
 DATA_GENERATOR_DICT = {
     "matmul": {
@@ -65,6 +72,11 @@ DATA_GENERATOR_DICT = {
         "cg_sparse_6": dg_cg_sparse_6,
         "cg_sparse_7": dg_cg_sparse_7,
         "cg_sparse_8": dg_cg_sparse_8,
+    },
+    "cp_als": {
+        "cp_als_sparse_small": dg_cp_als_sparse_small,
+        "cp_als_factorizable_small": dg_cp_als_factorizable_small,
+        "cp_als_darpa": dg_cp_als_darpa,
     },
 }
 

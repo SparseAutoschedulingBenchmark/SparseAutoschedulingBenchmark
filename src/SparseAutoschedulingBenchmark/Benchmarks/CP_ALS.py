@@ -32,7 +32,11 @@ No generative AI was used to construct the benchmark function itself. Generative
 used to debug some parts of the code. This statement was written by hand.
 """
 
+from pathlib import Path
+
 import numpy as np
+
+import h5py
 
 from ..BinsparseFormat import BinsparseFormat
 
@@ -203,4 +207,58 @@ def dg_cp_als_factorizable_small():
     X_bin = BinsparseFormat.from_coo(indices, values, (dim1, dim2, dim3))
     max_iter = 100
 
+    return (X_bin, rank, max_iter)
+
+
+def dg_cp_als_darpa():
+    """
+    Data generator function for DARPA tensor from FROSTT.
+
+    Returns:
+    Tuple of (X_bin, rank, max_iter) where:
+    - X_bin: BinsparseFormat tensor in COO format
+    - rank: decomposition rank
+    - max_iter: maximum number of CP-ALS iterations
+    """
+    from ..Utils.BinsparseFormat import BinsparseFormat
+
+    data_dir = Path(__file__).parent.parent / "data"
+    tensor_path = data_dir / "darpa_tensor.bsp.h5"
+    if not tensor_path.exists():
+        raise FileNotFoundError(
+            f"DARPA tensor file not found at {tensor_path}.\n"
+            "Run the download script first (python Utils/download_darpa_tensor.py)"
+        )
+    with h5py.File(tensor_path, "r") as f:
+        print(f"Loading DARPA tensor from {tensor_path}")
+        print(f"Available datasets: {list(f.keys())}")
+
+        indices_0 = f["indices_0"][:]
+        indices_1 = f["indices_1"][:]
+        indices_2 = f["indices_2"][:]
+        values = f["values"][:]
+
+        if "shape" in f.attrs:
+            shape = tuple(f.attrs["shape"])
+        else:
+            shape = (
+                int(indices_0.max()) + 1,
+                int(indices_1.max()) + 1,
+                int(indices_2.max()) + 1,
+            )
+        print(f"Tensor shape: {shape}, nnz: {len(values)}")
+        print(f"Sparsity: {len(values) / np.prod(shape):.6%}")
+
+    X_bin = BinsparseFormat.from_coo(
+        I_tuple=(indices_0, indices_1, indices_2),
+        V=values,
+        shape=shape,
+    )
+
+    assert X_bin.data["format"] == "COO", "Expected COO format"
+    assert X_bin.data["shape"] == shape, "Shape mismatch"
+    assert len(X_bin.data["values"]) == len(values), "Values count mismatch"
+
+    rank = 10
+    max_iter = 50
     return (X_bin, rank, max_iter)

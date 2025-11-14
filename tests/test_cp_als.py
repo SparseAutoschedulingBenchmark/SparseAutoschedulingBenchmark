@@ -2,6 +2,7 @@ import pytest
 
 from SparseAutoschedulingBenchmark.Benchmarks.CP_ALS import (
     benchmark_cp_als,
+    dg_cp_als_darpa,
     dg_cp_als_factorizable_small,
     dg_cp_als_sparse_small,
 )
@@ -82,3 +83,44 @@ def test_cp_als_factorizable_basic(xp):
     assert C_bin.data["shape"] == (dim3, rank)
     assert lambda_bin.data["shape"] == (rank,)
     print(f"CP-ALS factorizable test passed with {xp.__class__.__name__}")
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("xp", [NumpyFramework()])
+def test_cp_als_darpa_convergence(xp):
+    """Test that CP-ALS converges on DARPA tensor (this may take a while)"""
+    try:
+        X_bin, rank, max_iter = dg_cp_als_darpa()
+    except FileNotFoundError as e:
+        pytest.skip(f"DARPA tensor not available: {e}")
+
+    A_bin, B_bin, C_bin, lambda_bin = benchmark_cp_als(xp, X_bin, rank, max_iter=100)
+
+    import numpy as np
+
+    X_values = X_bin.data["values"]
+    X_indices = (
+        X_bin.data["indices_0"],
+        X_bin.data["indices_1"],
+        X_bin.data["indices_2"],
+    )
+    A_vals = A_bin.data["values"].reshape(A_bin.data["shape"])
+    B_vals = B_bin.data["values"].reshape(B_bin.data["shape"])
+    C_vals = C_bin.data["values"].reshape(C_bin.data["shape"])
+    lambda_vals = lambda_bin.data["values"]
+
+    i_idx, j_idx, k_idx = X_indices
+    Y_reconstructed = np.zeros(len(X_values), dtype=np.float32)
+    for r in range(rank):
+        Y_reconstructed += (
+            lambda_vals[r] * A_vals[i_idx, r] * B_vals[j_idx, r] * C_vals[k_idx, r]
+        )
+    X_norm = np.linalg.norm(X_values)
+    diff = Y_reconstructed - X_values
+    diff_norm = np.linalg.norm(diff)
+    rel_error = diff_norm / X_norm
+
+    print(f"Reconstruction error on DARPA tensor: {rel_error:.6f}")
+    assert rel_error < 0.8, (
+        f"Reconstruction error too high on DARPA tensor: {rel_error:.6f}"
+    )

@@ -4,6 +4,13 @@
 .python-version
 results/*
 
+# DARPA tensor data files (large, generated locally by download script)
+data/*.h5
+data/*.bsp.*
+data/*.tns
+data/*.tns.gz
+data/*.jl
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 */__pycache__/
