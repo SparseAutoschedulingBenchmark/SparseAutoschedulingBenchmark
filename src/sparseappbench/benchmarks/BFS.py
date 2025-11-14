@@ -40,11 +40,7 @@ def benchmark_bfs(xp, adjacency_matrix, source):
     level = xp.zeros((n,), dtype=int)
     level_idx = 1
     frontier_count = 1
-
-    edges = xp.lazy(edges)
-    visited = xp.lazy(visited)
-    frontier = xp.lazy(frontier)
-    level = xp.lazy(level)
+    edges, visited, frontier, level = xp.lazy([edges, visited, frontier, level])
     while frontier_count > 0:
         level = xp.where(frontier, level_idx, level)
         visited = xp.logical_or(visited, frontier)
@@ -52,10 +48,7 @@ def benchmark_bfs(xp, adjacency_matrix, source):
             "frontier[j] += edges[i,j] * frontier[i]", edges=edges, frontier=frontier
         )
         frontier = xp.logical_and(frontier, xp.logical_not(visited))
-        visited = xp.compute(visited)
-        frontier = xp.compute(frontier)
-        level = xp.compute(level)
-        frontier_count = xp.sum(frontier)
-        frontier_count = xp.compute(frontier_count)
+        visited, frontier, level = xp.compute([visited, frontier, level])
+        frontier_count = xp.compute(xp.sum(frontier))
         level_idx += 1
     return xp.to_benchmark(level)
