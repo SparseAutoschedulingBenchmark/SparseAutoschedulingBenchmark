@@ -1,6 +1,6 @@
 """
 Name: Markov Clustering Algorithm
-Author: Prateek Hanumappanahalli
+Co-Authors: Prateek Hanumappanahalli, Joel Mathew Cherian
 Email: phanumap3@gatech.edu
 Motivation: "The Markov Clustering (MCL) algorithm relies heavily on repeated matrix operations, particularly
 matrix multiplication during the expansion step. Since the efficient execution of matrix-based kernels has been 
@@ -36,9 +36,6 @@ def _prune(array_api, matrix, threshold):
     
     col_indices = array_api.arange(matrix.shape[1])
     row_indices = array_api.argmax(matrix, axis=0)
-
-    if hasattr(row_indices, 'get'):
-         row_indices = row_indices.get()
     
     pruned_matrix[row_indices, col_indices] = matrix[row_indices, col_indices]
     
