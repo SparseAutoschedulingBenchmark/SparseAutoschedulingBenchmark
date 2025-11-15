@@ -3,6 +3,7 @@ Name: Circuit Simulation Solver
 Author: Akarsh Duddu
 Email: aduddu3@gatech.edu
 """
+from functools import partial
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import Callable
@@ -18,7 +19,7 @@ def solve_ivp2(
 
     for i in range(1, inputs.shape[0]):
         # y_new = y + dy/dx * delta x
-        outputs[i] = outputs[i - 1] + np.array(dydx(inputs[i - 1], outputs[i - 1])) * step
+        outputs[i] = outputs[i-1] + np.array(dydx(inputs[i-1], outputs[i-1])) * step
 
     return (inputs, outputs)
 
@@ -60,7 +61,8 @@ def display_rc():
     t_max = 5 * R * C
     V_C_initial = 0.0
 
-    dVdt = lambda t, Vc: rc_ode(t, Vc, R, C, step_input)
+    dVdt = partial(rc_ode, R=R, C=C, Vs_func=step_input)
+    # dVdt = lambda t, Vc: rc_ode(t, Vc, R, C, step_input)
 
     time, voltage = solve_ivp2(dVdt, (0, t_max), [V_C_initial])
 
@@ -86,7 +88,8 @@ def display_lv():
     y0 = [10, 5]
 
     # ODE wrapper
-    dydt = lambda t, y: lotka_volterra(t, y, a, b, c, d)
+    dydt = partial(lotka_volterra, a=a, b=b, c=c, d=d)
+    # dydt = lambda t, y: lotka_volterra(t, y, a, b, c, d)
 
     # Solve
     t, sol = solve_ivp2(dydt, (0, 30), y0)
@@ -113,9 +116,10 @@ def display_rlc():
     t_max = 100 * R * C
 
     y0 = np.array([0.0, 0.0])
-    dVdt = lambda t, y: rlc(t, y, R, L, C, step_input)
+    dVdt = partial(rlc, R=R, L=L, C=C, Vs=step_input)
+    # dVdt = lambda t, y: rlc(t, y, R, L, C, step_input)
     t, sol = solve_ivp2(dVdt, (0, t_max), y0)
-    print(sol)
+    print(sol.shape)
 
     plt.plot(t*1000, sol[:, 0])
     plt.xlabel("Time (ms)")
