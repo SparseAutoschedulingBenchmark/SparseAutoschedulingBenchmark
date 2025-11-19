@@ -23,6 +23,10 @@ Data Generation:
 Graphs for this benchmark may be created manually for testing or generated
 procedurally using a Graph500-style R-MAT model. Generated adjacency matrices
 are converted into the benchmark format with BinsparseFormat.from_numpy().
+
+Statement on the use of Generative AI: No generative AI was used to construct
+the benchmark function itself. Generative AI might have been used to construct
+tests. This statement was written by hand.
 """
 
 
@@ -40,7 +44,6 @@ def benchmark_bfs(xp, adjacency_matrix, source):
     level = xp.zeros((n,), dtype=int)
     level_idx = 1
     frontier_count = 1
-    edges, visited, frontier, level = xp.lazy([edges, visited, frontier, level])
     while frontier_count > 0:
         level = xp.where(frontier, level_idx, level)
         visited = xp.logical_or(visited, frontier)
@@ -48,6 +51,7 @@ def benchmark_bfs(xp, adjacency_matrix, source):
             "frontier[j] += edges[i,j] * frontier[i]", edges=edges, frontier=frontier
         )
         frontier = xp.logical_and(frontier, xp.logical_not(visited))
+        visited, frontier, level = xp.lazy([visited, frontier, level])
         visited, frontier, level = xp.compute([visited, frontier, level])
         frontier_count = xp.compute(xp.sum(frontier))
         level_idx += 1
