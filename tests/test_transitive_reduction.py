@@ -1,9 +1,9 @@
 import numpy as np
 
-from SparseAutoschedulingBenchmark.Benchmarks.TransitiveReduction import (
+from sparseappbench.benchmarks.transitive_reduction import (
     transitive_reduction,
 )
-from SparseAutoschedulingBenchmark.Frameworks.NumpyFramework import NumpyFramework
+from sparseappbench.frameworks.numpy_framework import NumpyFramework
 
 
 def create_graph(xp, edges, n):
