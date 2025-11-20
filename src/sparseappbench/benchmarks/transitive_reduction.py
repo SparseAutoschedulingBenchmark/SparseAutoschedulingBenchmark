@@ -20,11 +20,6 @@ Statement on the Use of Generative AI:
 No generative AI was used to construct the benchmark function.
 This statement was written by hand.
 """
-<<<<<<< HEAD:src/sparseappbench/benchmarks/transitive_reduction.py
-import numpy as np
-from ..binsparse_format import BinsparseFormat
-=======
->>>>>>> 45f45ef (Update algoruthm and hand coded test to reflect the comments):src/SparseAutoschedulingBenchmark/Benchmarks/TransitiveReduction.py
 
 import numpy as np
 
