@@ -2,10 +2,10 @@ import os
 
 import numpy as np
 
-import SparseAutoschedulingBenchmark as autobench
-from SparseAutoschedulingBenchmark.BinsparseFormat import BinsparseFormat
-from SparseAutoschedulingBenchmark.Frameworks.AbstractFramework import AbstractFramework
-from SparseAutoschedulingBenchmark.Frameworks.einsum import einsum
+import sparseappbench as autobench
+from sparseappbench.binsparse_format import BinsparseFormat
+from sparseappbench.frameworks.abstract_framework import AbstractFramework
+from sparseappbench.frameworks.einsum import einsum
 
 
 class NumpyTestFramework(AbstractFramework):

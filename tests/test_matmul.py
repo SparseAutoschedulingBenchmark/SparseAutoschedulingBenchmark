@@ -2,10 +2,10 @@ import pytest
 
 import numpy as np
 
-from SparseAutoschedulingBenchmark.Benchmarks.MatMul import benchmark_matmul
-from SparseAutoschedulingBenchmark.BinsparseFormat import BinsparseFormat
-from SparseAutoschedulingBenchmark.Frameworks.CheckerFramework import CheckerFramework
-from SparseAutoschedulingBenchmark.Frameworks.NumpyFramework import NumpyFramework
+from sparseappbench.benchmarks.matmul import benchmark_matmul
+from sparseappbench.binsparse_format import BinsparseFormat
+from sparseappbench.frameworks.checker_framework import CheckerFramework
+from sparseappbench.frameworks.numpy_framework import NumpyFramework
 
 
 @pytest.mark.parametrize(
