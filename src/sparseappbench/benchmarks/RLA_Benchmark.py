@@ -5,12 +5,12 @@ import numpy as np
 Name: Randomized Numerical Linear Algebra and Algorithms.
 Author: Vilohith Gokarakonda
 The purpose of this is to create python tests that are for Randomized Linear Algebra methods.
-    Specifically, I will first show the application of the Johnson Lindenstrauss Lemma for Nearest Neighbor.
+    Specifically, I will first show the application of the Johnson Lindenstrauss Lemma for NN.
     My goal is to write benchmarks on applications of Randomized Numerical Linear Algebra, paticuarily
     for graph algorithms, PDEs, and Scientific Machine Learning.
-    Next PR will be from this paper: SPARSE GRAPH BASED SKETCHING FOR FAST NUMERICAL LINEAR ALGEBRA
+    Next PR will be from this paper: SPARSE GRAPH BASED SKETCHING FOR FAST NLA
     My semester goal project will be to understand Learning Green’s functions associated with time-dependent
-    partial differential equations and start writing code in Finchlite an understand finch implementation of these methods.
+    partial differential equations and start writing code in Finchlite.
 """
 
 
@@ -19,7 +19,8 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     query = xp.lazy(xp.from_benchmark(query_bench))
 
     n_samples, n_features = data.shape
-    #  Johnson Lindenstrauss Theorem Lemmna. The eps represents the disortion of distance by epsilon, between the the original space and the reduced subspace
+    #  Johnson Lindenstrauss Theorem Lemmna. The eps represents the disortion of distance by epsilon,
+    # between the the original space and the reduced subspace
     target_dim = xp.log(n_samples) / (eps * eps)
     if target_dim > n_features:
         target_dim = n_features
@@ -35,7 +36,8 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     # total number of entries in matrix
     n_total = n_features * target_dim
 
-    # 1-D matrix so it is easier to do random with. these random entries represent probabilities that value will either be pos, negative, or 0.
+    # 1-D matrix so it is easier to do random with.
+    # these random entries represent probabilities that value will either be pos, negative, or 0.
     U = np.random.rand(n_total)
 
     # Indices for negative entries
@@ -49,7 +51,11 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     neg_cols = one_dimen_neg_indices % target_dim  # tells col of -1 val
     neg_vals = -np.ones(len(one_dimen_neg_indices))  # the actual negative one value
 
-    # in the end, it would be like neg_rows = [3,4], neg_cols = [0,1], neg_vals  = [-1,-1]. Mean -1 vals will be at [3,0] and [4,1].
+    # in the end, it would be like
+    # neg_rows = [3,4],
+    # neg_cols = [0,1],
+    # neg_vals  = [-1,-1].
+    # Mean -1 vals will be at [3,0] and [4,1].
 
     # Indices for positive entries
     pos_checker = (U >= density_half) & (
@@ -60,7 +66,8 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     pos_cols = one_dimen_pos_indices % target_dim
     pos_vals = np.ones(len(one_dimen_pos_indices))
 
-    # Stack basically all the rows and columns from the negative and positives row and col positions and the nonzero values associated with those positions.
+    # Stack basically all the rows and columns from the negative and
+    # positives row and col positions and the nonzero values associated with those positions.
     rows = np.concatenate([neg_rows, pos_rows])
     cols = np.concatenate([neg_cols, pos_cols])
     vals = np.concatenate([neg_vals, pos_vals])
@@ -91,7 +98,8 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     nearest_indices = xp.argsort(distances)[:k]
     nearest_distances = xp.sort(distances)[:k]
 
-    # Just puts the results in 3 by 5 matrix. nearest_indices is scalar that associates to sample point i in original space. Distance is in projected subspace.
+    # Just puts the results in 3 by 5 matrix. nearest_indices is scalar
+    # that associates to sample point i in original space. Distance is in projected subspace.
     result_indices = xp.stack([xp.arange(k), nearest_indices], axis=0)
     result = xp.stack([result_indices, nearest_distances], axis=0)
 
