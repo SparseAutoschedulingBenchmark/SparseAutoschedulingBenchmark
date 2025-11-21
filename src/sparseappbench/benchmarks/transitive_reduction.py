@@ -44,11 +44,11 @@ def transitive_reduction(xp, R_bench, x=1, max_iters=10):
     R = xp.lazy(R)
 
     for _i in range(max_iters):
-        #R_plus = xp.with_fill_value(R, np.inf)
+        # R_plus = xp.with_fill_value(R, np.inf)
 
         # handle dense arrays (Numpy) where 0 must be converted to inf
         # without this, 0s act as valid edges with 0 weight
-        #R_plus = xp.where(R == 0, np.inf, R_plus)
+        # R_plus = xp.where(R == 0, np.inf, R_plus)
 
         # N <- R ^ 2 in Algo 2 that uses custom MinPlus semiring
         # expressed through einsum- R[i, k] + R[k, j] iterates
