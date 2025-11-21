@@ -9,7 +9,7 @@ The purpose of this is to create python tests that are for RLA methods.
     My goal is to write benchmarks on applications of RNLA,
     for graph algorithms, PDEs, and Scientific Machine Learning.
     Next PR will be from this paper: SPARSE GRAPH BASED SKETCHING FOR FAST NLA
-    My semester goal project will be to understand Learning Green’s functions with 
+    My semester goal project will be to understand Learning Green’s functions with
     time-dependent partial differential equations and start writing code in Finchlite.
 """
 
