@@ -43,7 +43,7 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
 
     # Indices for negative entries
     neg_checker = (
-        U < density_half  # range of [0, p_half)
+        U < density_half  # range of [0, density_half)
     )  # since probability that there will be a negative  value is 1/2s
     one_dimen_neg_indices = np.nonzero(neg_checker)[
         0
@@ -61,7 +61,7 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     # Indices for positive entries
     pos_checker = (U >= density_half) & (
         U < density
-    )  # range of [p_half, p), still 1/2s probability.
+    )  # range of [density_half, density), still 1/2s probability.
     # Everything else is sense as negative case.
     one_dimen_pos_indices = np.nonzero(pos_checker)[0]
     pos_rows = one_dimen_pos_indices // target_dim
