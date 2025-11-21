@@ -56,9 +56,8 @@ def transitive_reduction(xp, R_bench, x=1, max_iters=10):
         # finds all 2-hop paths, and adds their lengths
         N = xp.einsum("N[i, j] min= R[i, k] + R[k, j]", R=R)
 
-        
-        R_for_max = xp.where(R == np.inf, -1.0, R)
-        
+        R_for_max = xp.where(np.inf == R, -1.0, R)
+
         # max(r) not max(n)
         v = xp.max(R_for_max, axis=1)
 
