@@ -16,7 +16,9 @@ from sparseappbench.binsparse_format import BinsparseFormat
 
 xp = np
 
-def bellman_ford (edges, src): #assume that edges is a square adjacency matrix of edge weights and src is the index of the starting node
+def bellman_ford (edges, src): 
+    #assume that edges is a square adjacency matrix of edge weights 
+    # and src is the index of the starting node
     # check if edges is a valid adjacency matrix
     n = len(edges)
     m = len(edges[0])
