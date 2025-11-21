@@ -38,7 +38,7 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     n_total = n_features * target_dim
 
     # 1-D matrix so it is easier to do random with.
-    # these random entries represent probabilities that values will either be -1, 1, or 0.
+    # these random entries represent probs that values will either be -1, 1, or 0.
     U = np.random.Generator(n_total)
 
     # Indices for negative entries
