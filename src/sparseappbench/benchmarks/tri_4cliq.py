@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from ..binsparse_format import BinsparseFormat
+#from ..binsparse_format import BinsparseFormat
 """
 Name: Triangle, 4-Clique Counting
 Author: Jeffrey Xu
@@ -32,8 +32,8 @@ that begin at the vertex denoted by the row label and end at the vertex denoted 
 Triangle Counting: Given adjacency matrix A, # triangles = trace(A^3) // 6. This counts the number of walks of length 3 that start at vertex i
 and end at vertex i, which is exactly a triangle. Divide by 6 to avoid overcounting.
 
-4-clique Counting: A 4-clique must contain 6 edges that connect all 4 vertices. The einsum does the following: for a given vertex i, checks for existence of
-3 edges to 3 other vertices, then checks for existence of 3 edges between those 3 vertices. This constitutes a 4-clique. Divide by 24 to avoid overcounting.
+4-clique Counting: A 4-clique must contain 6 edges that connect all 4 vertices. The einsum does the following: for a given vertex i, checks for existence
+of 3 edges to 3 other vertices, then checks for existence of 3 edges between those 3 vertices. This constitutes a 4-clique. Divide by 24 to avoid overcounting.
 
 Data Generation:
 
@@ -42,11 +42,26 @@ No generative AI was used to write the benchmark function itself. Generative
 AI was used to debug code. This statement was written by hand.
 """
 
+#Testing matrices
+"""test_tri = np.array([
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 0]
+], dtype=int)
+
+test_4cliq = np.array([
+    [0, 1, 1, 1],
+    [1, 0, 1, 1],
+    [1, 1, 0, 1],
+    [1, 1, 1, 0]
+], dtype=int)"""
 
 def benchmark_triangle_count(xp, A_bench):
-    A_lazy = xp.lazy(xp.from_benchmark(A_bench))
-    return np.einsum('ik, jk, ki ->', A_lazy, A_lazy, A_lazy) / 6
+    return np.einsum('ij, jk, ki ->', A_bench, A_bench, A_bench) / 6
 
 def benchmark_4clique_count(xp, A_bench):
-    A_lazy = xp.lazy(xp.from_benchmark(A_bench))
-    return np.einsum('ij,ik,il,jk,jl,kl->',A_lazy, A_lazy, A_lazy, A_lazy, A_lazy, A_lazy) / 24
+    return np.einsum('ij,ik,il,jk,jl,kl->',A_bench, A_bench, A_bench, A_bench, A_bench, A_bench) / 24
+
+
+#print(benchmark_4clique_count(np,test_4cliq))
+#print(benchmark_triangle_count(np, test_tri))
