@@ -4,13 +4,13 @@ import numpy as np
 """
 Name: Randomized Numerical Linear Algebra and Algorithms.
 Author: Vilohith Gokarakonda
-The purpose of this is to create python tests that are for Randomized Linear Algebra methods.
+The purpose of this is to create python tests that are for RLA methods.
     Specifically, I will first show the application of the Johnson Lindenstrauss Lemma for NN.
-    My goal is to write benchmarks on applications of Randomized Numerical Linear Algebra, paticuarily
+    My goal is to write benchmarks on applications of Randomized Numerical Linear Algebra,
     for graph algorithms, PDEs, and Scientific Machine Learning.
     Next PR will be from this paper: SPARSE GRAPH BASED SKETCHING FOR FAST NLA
-    My semester goal project will be to understand Learning Green’s functions associated with time-dependent
-    partial differential equations and start writing code in Finchlite.
+    My semester goal project will be to understand Learning Green’s functions associated with 
+    time-dependent partial differential equations and start writing code in Finchlite.
 """
 
 
@@ -38,7 +38,7 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
 
     # 1-D matrix so it is easier to do random with.
     # these random entries represent probabilities that value will either be pos, negative, or 0.
-    U = np.random.rand(n_total)
+    U = np.random.Generator(n_total)
 
     # Indices for negative entries
     neg_checker = (
@@ -60,14 +60,14 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     # Indices for positive entries
     pos_checker = (U >= density_half) & (
         U < density
-    )  # range of [p_half, p), still 1/2s probability # everything else is the same as negative.
+    )  # range of [p_half, p), still 1/2s probability everything else is the same as negative.
     one_dimen_pos_indices = np.nonzero(pos_checker)[0]
     pos_rows = one_dimen_pos_indices // target_dim
     pos_cols = one_dimen_pos_indices % target_dim
     pos_vals = np.ones(len(one_dimen_pos_indices))
 
     # Stack basically all the rows and columns from the negative and
-    # positives row and col positions and the nonzero values associated with those positions.
+    # positives row and col positions and the nonzero values with the pos.
     rows = np.concatenate([neg_rows, pos_rows])
     cols = np.concatenate([neg_cols, pos_cols])
     vals = np.concatenate([neg_vals, pos_vals])
@@ -99,7 +99,8 @@ def benchmark_johnson_lindenstrauss_nn(xp, data_bench, query_bench, k=5, eps=0.1
     nearest_distances = xp.sort(distances)[:k]
 
     # Just puts the results in 3 by 5 matrix. nearest_indices is scalar
-    # that associates to sample point i in original space. Distance is in projected subspace.
+    # that associates to sample point i in original space.
+    # Distance is in projected subspace.
     result_indices = xp.stack([xp.arange(k), nearest_indices], axis=0)
     result = xp.stack([result_indices, nearest_distances], axis=0)
 
