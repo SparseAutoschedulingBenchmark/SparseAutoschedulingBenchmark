@@ -85,7 +85,6 @@ def test_cp_als_factorizable_basic(xp):
     print(f"CP-ALS factorizable test passed with {xp.__class__.__name__}")
 
 
-@pytest.mark.slow
 @pytest.mark.parametrize("xp", [NumpyFramework()])
 def test_cp_als_darpa_convergence(xp):
     """Test that CP-ALS converges on DARPA tensor (this may take a while)"""

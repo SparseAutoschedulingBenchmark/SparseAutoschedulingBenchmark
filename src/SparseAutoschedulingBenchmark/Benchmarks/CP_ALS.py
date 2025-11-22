@@ -220,7 +220,6 @@ def dg_cp_als_darpa():
     - rank: decomposition rank
     - max_iter: maximum number of CP-ALS iterations
     """
-    from ..Utils.BinsparseFormat import BinsparseFormat
 
     data_dir = Path(__file__).parent.parent / "data"
     tensor_path = data_dir / "darpa_tensor.bsp.h5"

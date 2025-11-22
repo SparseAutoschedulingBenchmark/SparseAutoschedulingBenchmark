@@ -5,7 +5,7 @@ This is the smallest 3D tensor from FROSTT (exclusing matrix multiplication).
 
 Prerequisites:
 - Julia must be installed: https://julialang.org/downloads/
-- Finch.jl package must be installed: julia -e 'using Pkg; Pkg.add("Finch")'
+- Finch.jl package must be installed: julia -e 'using Pkg; Pkg.add("TensorMarket")'
 - h5py must be installed: pip install h5py
 """
 
@@ -35,10 +35,10 @@ def download_darpa_tensor(output_dir=None):
     os.makedirs(output_dir, exist_ok=True)
     print(f"Output directory: {output_dir}")
 
-    url = "http://frostt.io/tensors/darpa/1998darpa.tns.gz"
+    url = "https://frostt-tensors.s3.us-east-2.amazonaws.com/1998DARPA/1998darpa.tns.gz"
     tns_gz_path = output_dir / "1998darpa.tns.gz"
     tns_path = output_dir / "1998darpa.tns"
-    binsparse_path = output_dir / "darpa_binsparse.bsp.h5"
+    binsparse_path = output_dir / "darpa_tensor.bsp.h5"
 
     if binsparse_path.exists():
         print(f"Binsparse file already exists at {binsparse_path}")
@@ -65,14 +65,60 @@ def download_darpa_tensor(output_dir=None):
             return None
 
         try:
-            subprocess.rin(["gunzip", "-f", str(tns_gz_path)], check=True)
-            print("Extracted tp: {tns_path}")
-        except FileNotFoundError:
-            print(
-                "gunzip not found. Please install gunzip or extract the file manually."
-            )
-            return None
-        except subprocess.CalledProcessError as e:
+            import gzip
+            import shutil
+            import tarfile
+
+            if tarfile.is_tarfile(tns_gz_path):
+                print("File is a tar archive, extracting...")
+                with tarfile.open(tns_gz_path, "r:gz") as tar:
+                    members = tar.getmembers()
+                    print(f"Archive contains {len(members)} files")
+                    # Finding the .tns file
+                    tns_member = None
+                    for member in members:
+                        if (
+                            not member.name.startswith("._")
+                            and not member.name.startswith("PaxHeader")
+                            and member.name.endswith(".tns")
+                            and member.isfile()
+                        ):
+                            tns_member = member
+                            print(f"Found tensor file: {member.name}")
+                            break
+                    if tns_member is None:
+                        print("ERROR: Could not find .tns file in archive")
+                        print("Archive contents:")
+                        for m in members:
+                            print(f"    - {m.name}")
+                        return None
+                    print(f"Extracting {tns_member.name}...")
+                    tar.extract(tns_member, output_dir)
+                    extracted_path = output_dir / tns_member.name
+                    if extracted_path != tns_path:
+                        shutil.move(str(extracted_path), str(tns_path))
+                    print(f"Extracted to: {tns_path}")
+            else:
+                print("File is a regular gzip, extracting...")
+                with (
+                    gzip.open(tns_gz_path, "rb") as f_in,
+                    open(tns_path, "wb") as f_out,
+                ):
+                    shutil.copyfileobj(f_in, f_out)
+                print(f"Extracted to: {tns_path}")
+            print("\nVerifying extracted file...")
+            with open(tns_path, encoding="utf-8", errors="ignore") as f:
+                first_line = f.readline().strip()
+                if first_line and all(
+                    c.isdigit() or c.isspace() or c == "." or c == "-"
+                    for c in first_line[:50]
+                ):
+                    print("File appears to be valid .tns format")
+                else:
+                    print("Warning: File may not be in .tns format")
+            tns_gz_path.unlink()
+            print("Cleaned up archive file")
+        except (tarfile.TarError, gzip.BadGzipFile, OSError) as e:
             print(f"Error extracting file: {e}")
             return None
     else:
@@ -83,7 +129,7 @@ def download_darpa_tensor(output_dir=None):
         result = subprocess.run(
             ["julia", "--version"], capture_output=True, text=True, check=True
         )
-        print(f" Found Julia: {result.stdout.strip()}")
+        print(f"Found Julia: {result.stdout.strip()}")
     except FileNotFoundError:
         print("Julia not found. Please install Julia to proceed.")
         return None
@@ -91,17 +137,46 @@ def download_darpa_tensor(output_dir=None):
         print("Julia command failed.")
         return None
 
+    tns_path_julia = str(tns_path).replace("\\", "/")
+    binsparse_path_julia = str(binsparse_path).replace("\\", "/")
+
     julia_script = f"""
+    using Pkg
+    println("Checking for TensorMarket.jl package...")
     try
-        using Finch
+        using TensorMarket
     catch
-        Pkg.add("Finch")
-        using Finch
+        Pkg.add("TensorMarket")
+        using TensorMarket
     end
 
-    tensor = Finch.fread("{tns_path}")
-    Finch.fwrite("{binsparse_path}", tensor)
-    println("Output: {binsparse_path}")
+    try
+        using HDF5
+    catch
+        Pkg.add("HDF5")
+        using HDF5
+    end
+
+    tensor = TensorMarket.tnsread("{tns_path_julia}")
+    println("Extracting COO format data...")
+    coords, values = tensor
+    indices_0 = coords[1] .- 1
+    indices_1 = coords[2] .- 1
+    indices_2 = coords[3] .- 1
+    shape = (maximum(indices_0) + 1,
+             maximum(indices_1) + 1,
+             maximum(indices_2) + 1)
+
+    h5open("{binsparse_path_julia}", "w") do file
+        file["indices_0"] = Int32.(indices_0)
+        file["indices_1"] = Int32.(indices_1)
+        file["indices_2"] = Int32.(indices_2)
+        file["values"] = Float32.(values)
+        attributes(file)["shape"] = collect(Int64.(shape))
+    end
+    println("\\nConversion complete!")
+    println("Output: {binsparse_path_julia}")
+    println("Success: DARPA tensor ready for benchmarking!")
     """
     julia_script_path = output_dir / "convert_darpa_to_binsparse.jl"
     with open(julia_script_path, "w") as f:
