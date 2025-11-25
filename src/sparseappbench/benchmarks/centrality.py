@@ -5,11 +5,12 @@ Author: Aadharsh Rajkumar
 
 Email: arajkumar34@gatech.edu
 
-What does this code do: The current code is only able to do the first step of
-the process which involves going layer by layer from each potential starting node.
-This will allow us to find the number of shortest paths to each other node. The
-second step which is not implemented yet will handle the backtracing and finding
-the number of times each node is in a shortest path.
+What does this code do: The current code is able to do both the first and second steps
+of the process. The first step involves going layer by layer from each potential
+starting node to find the total amount of shortest paths that lead to a node. The 
+second step is for tracing backwards to see how many times a node appears in other
+shortest paths. This code is based on the Brandes betweennness centrality algorithm.
+This code performs lazy calculations before computing at the end of iteration blocks.
 
 Citation for reference implementation: 
 https://github.com/SparseApplicationBenchmark/SparseApplicationBenchmark/pull/48/files
@@ -49,13 +50,41 @@ def betweenness_centrality(xp, A_binsparse):
 
         while(node_count != 0):
             depth += 1
+            neighbors = xp.compute(neighbors)
             layer_traversal.append(neighbors)
+
+            number_of_paths = xp.lazy(number_of_paths)
+            neighbors = xp.lazy(neighbors)
+
             number_of_paths = number_of_paths + neighbors
 
             not_neighbors = xp.equal(number_of_paths, 0)
-            neighbors = xp.matmul(neighbors, G) * not_neighbors
+            next_neighbors = xp.matmul(neighbors, G) * not_neighbors
+
+            number_of_paths, next_neighbors = xp.compute((number_of_paths, next_neighbors))
+
+            neighbors = next_neighbors
 
             node_count = xp.compute(xp.sum(neighbors))
+        
+        score_update = xp.zeros((n,), dtype = float)
 
+        while depth > 1:
+            neighbors = layer_traversal[depth - 1]
 
-    return
+            score_update = xp.lazy(score_update)
+            neighbors = xp.lazy(neighbors)
+            number_of_paths = xp.lazy(number_of_paths)
+
+            update_val = neighbors * ((1 + score_update) / number_of_paths)
+
+            update_val = update_val + xp.matmul(G, update_val)
+            update_val = xp.compute(update_val)
+
+            score_update = xp.compute(score_update + update_val)
+
+            depth -= 1
+        
+        bc_scores = bc_scores + score_update
+
+    return xp.to_benchmark(bc_scores)
