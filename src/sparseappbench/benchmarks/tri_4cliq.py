@@ -1,6 +1,6 @@
 import os
 import numpy as np
-#from ..binsparse_format import BinsparseFormat
+from ..binsparse_format import BinsparseFormat
 """
 Name: Triangle, 4-Clique Counting
 Author: Jeffrey Xu
@@ -42,26 +42,14 @@ No generative AI was used to write the benchmark function itself. Generative
 AI was used to debug code. This statement was written by hand.
 """
 
-#Testing matrices
-"""test_tri = np.array([
-    [0, 1, 1],
-    [1, 0, 1],
-    [1, 1, 0]
-], dtype=int)
-
-test_4cliq = np.array([
-    [0, 1, 1, 1],
-    [1, 0, 1, 1],
-    [1, 1, 0, 1],
-    [1, 1, 1, 0]
-], dtype=int)"""
 
 def benchmark_triangle_count(xp, A_bench):
-    return np.einsum('ij, jk, ki ->', A_bench, A_bench, A_bench) / 6
+    A_lazy=xp.lazy(xp.from_benchmark(A_bench))
+    triangles = xp.einsum(xp,"S[] += A[i,j] * A[j,k] * A[k,i]", A=A_lazy) / 6
+    return xp.to_benchmark(xp.compute(triangles))
+
 
 def benchmark_4clique_count(xp, A_bench):
-    return np.einsum('ij,ik,il,jk,jl,kl->',A_bench, A_bench, A_bench, A_bench, A_bench, A_bench) / 24
-
-
-#print(benchmark_4clique_count(np,test_4cliq))
-#print(benchmark_triangle_count(np, test_tri))
+    A_lazy = xp.lazy(xp.from_benchmark(A_bench))
+    cliques_4 = xp.einsum(xp,"S[] += A[i,j] * A[i,k] * A[i,l] * A[j,k] * A[j,l] * A[k,l]",A=A_bench) / 24
+    return xp.to_benchmark(xp.compute(cliques_4))
