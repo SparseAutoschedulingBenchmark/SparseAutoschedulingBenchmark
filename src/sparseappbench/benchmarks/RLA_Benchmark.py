@@ -43,11 +43,6 @@ def benchmark_johnson_lindenstrauss_nn(
     if target_dim > n_features:
         target_dim = n_features
 
-    # Scales to  np.sqrt(s / target_dim)
-    # projection_matrix_sparse_scaled = projection_matrix_sparse * scale
-
-    # --- End of Sparse Random Projection Stuff -------
-
     # final_projection_matrix = xp.array(projection_matrix_sparse_scaled.toarray())
 
     # Project to lower subspace
