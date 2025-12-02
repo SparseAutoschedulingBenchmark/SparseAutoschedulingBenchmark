@@ -36,9 +36,12 @@ def _normalize(array_api, matrix):
 
 
 def _sparse_allclose(array_api, matrix_a, matrix_b, rtol=1e-5, atol=1e-8):
-    return array_api.all(
+    matrix_a = lazy(matrix_a)
+    matrix_b = lazy(matrix_b)
+    c = array_api.all(
         array_api.abs(matrix_a - matrix_b) <= atol + rtol * array_api.abs(matrix_b)
     )
+    return compute(c)
 
 
 def _prune(array_api, matrix, threshold):
