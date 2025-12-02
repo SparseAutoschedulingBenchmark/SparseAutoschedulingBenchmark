@@ -88,15 +88,20 @@ def benchmark_mcl(
     pruning_frequency=1,
     convergence_check_frequency=1,
 ):
+    # begin region 1
     graph_lazy = array_api.lazy(array_api.from_benchmark(graph_binsparse))
 
     loops_matrix = array_api.eye(graph_lazy.shape[0], dtype=graph_lazy.dtype)
     current_matrix = graph_lazy + loop_value * loops_matrix
-
     current_matrix = _normalize(array_api, current_matrix)
+    # end region 1
+    current_matrix = array_api.compute(current_matrix)
 
     for i in range(iterations):
         previous_matrix = current_matrix
+
+        # begin region 2
+        current_matrix = array_api.lazy(current_matrix)
 
         expanded_matrix = current_matrix
         for _ in range(expansion - 1):
@@ -108,13 +113,15 @@ def benchmark_mcl(
         if pruning_threshold > 0 and i % pruning_frequency == (pruning_frequency - 1):
             current_matrix = _prune(array_api, current_matrix, pruning_threshold)
 
+        # end region 2
+        current_matrix = array_api.compute(current_matrix)
+
         if i % convergence_check_frequency == (
             convergence_check_frequency - 1
         ) and _sparse_allclose(array_api, current_matrix, previous_matrix):
             break
 
-    final_matrix = array_api.compute(current_matrix)
-    return array_api.to_benchmark(final_matrix)
+    return array_api.to_benchmark(current_matrix)
 
 
 def generate_mcl_data(source):
