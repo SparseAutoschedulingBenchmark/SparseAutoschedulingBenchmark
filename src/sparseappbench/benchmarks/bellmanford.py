@@ -1,44 +1,40 @@
-# Bellman Ford Algorithm:
+"""
+Name: Bellman Ford Algorithm
+Author: Ilisha Gupta, Joel Mathew Cherian
+Email: igupta90@gatech.edu
 
-# Given a weighted graph with V vertices and E edges and a starting vertex src, 
-# Bellman-Ford algoirthm computes the shortest distance from src to all V. 
-# If the vertext is unreachable, then infinite distance. 
-# If there is a negative weight cycle, then we return -1 since shortest path 
-# calculations are not feasible
+What does this code do:
+This code implements an Array-API compatible version of Bellman Ford Algorithm
+to find the shortest distance from a src node to all edges across a graph.
+It takes in an adjacency matrix as an input and then slowly relaxes each vector
+by broadcasting it and then determining the minimum distances iteratively.
 
-# TO DO:
-# Add Lazy and Compute
-# Generate the test cases
+Role of sparsity:
+Often, many graphs when represented as adjacency matrices do not have a lot of
+edges while there are n^2 entries, which means that sparsity can be large and optimised.
 
-import numpy as np
-import scipy.sparse as sp
+Citation for reference implementation:
+Kepner, Jeremy, and John Gilbert, eds. Graph algorithms in the language of
+linear algebra
 
-from sparseappbench.binsparse_format import BinsparseFormat
+Statement on the use of Generative AI: No generative AI was used to construct
+the benchmark function itself. This statement was written by hand.
+"""
 
-xp = np
 
-def bellman_ford (edges, src): 
-    #assume that edges is a square adjacency matrix of edge weights 
-    # and src is the index of the starting node
-    # check if edges is a valid adjacency matrix
-    n = len(edges)
-    m = len(edges[0])
-    if n!=m:
-        return ("This is not a valid adjacency matrix")
-    
+def bellman_ford(xp, edges, src):
+    # Clarification – should I add lazy/compute here too?
+    # edges = xp.lazy(edges)
+    edges = xp.from_benchmark(edges)
+    n = edges.shape[0]
+
     G = xp.asarray(edges, dtype=float)
-    D = xp.full((n,), xp.inf) # distance vectors initialized to infinity
+    D = xp.full((n,), xp.inf)
     D[src] = 0
 
-        # Relax n times (Bellman–Ford)
+    G, D = xp.compute((G, D))
+
     for _ in range(n):
-        # candidates[j, i] = D[j] + G[j, i]
-        candidates = D[:, None] + G  # shape (n, n)
-
-        # For each i: D[i] = min(D[i], min_j candidates[j, i])
+        candidates = D[:, None] + G
         D = xp.minimum(D, candidates.min(axis=0))
-
-    return D # running this using vectorized algebra instead of loops
-    # expected return output is an array of shortest-path distances
-
-
+    return xp.to_benchmark(D)
