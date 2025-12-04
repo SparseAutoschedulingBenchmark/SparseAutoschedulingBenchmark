@@ -59,12 +59,16 @@ def benchmark_johnson_lindenstrauss_nn(
     diff = projected_data - projected_query
     distances = xp.sqrt(xp.sum(diff**2, axis=1))
 
-    # Flattens everything into 1D NumPy Array
-    distances = np.asarray(distances).reshape(-1)
+    # Get nearest k neighbors.
+    sorted_indices = xp.argsort(distances)
 
-    # Flattens everything into 1D NumPy Array
-    nearest_indices = xp.compute(xp.argsort(distances)[:k])
-    nearest_distances = xp.compute(xp.sort(distances)[:k])
+    # I think xp.take could fix this.
+    nearest_indices = xp.take(sorted_indices, xp.arange(k))
+    nearest_distances = xp.take(xp.sort(distances), xp.arange(k))
+
+    # Only compute at the very end
+    nearest_indices = xp.compute(nearest_indices)
+    nearest_distances = xp.compute(nearest_distances)
 
     return xp.to_benchmark(nearest_indices), xp.to_benchmark(nearest_distances)
 
@@ -102,6 +106,5 @@ def data_knn_rla_generator(xp, data_bench, seed=40, eps=0.1):
         ),  # specified dtype to see of that made a difference
         random_state=rng,
     )
-    U = xp.compute(U_Neg + U_Pos)
-
-    return xp.to_benchmark(U)
+    U_dense = (U_Neg + U_Pos).toarray()
+    return xp.lazy(U_dense)

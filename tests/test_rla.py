@@ -58,17 +58,15 @@ def test_jl_preserves_distance_order():
 
     # Convert benchmark objects back into framework arrays
     nearest_ind = xp.from_benchmark(nearest_ind)
-    data_bench = xp.from_benchmark(data_bench)
-    query_bench = xp.from_benchmark(query_bench)
 
     # True distances
     diff = data_bench - query_bench
     orig_distances = np.sqrt(np.sum(diff**2, axis=1))
     orig_order = np.argsort(orig_distances)[:k]
 
-    # Check overlap
+    # Checks if at least 2 of the approx NN match true NN.
     overlap = len(set(nearest_ind.astype(int)) & set(orig_order))
-    assert overlap >= 1
+    assert overlap >= 2
 
 
 def test_data_knn_rla_generator_shape_and_scale():
@@ -81,7 +79,6 @@ def test_data_knn_rla_generator_shape_and_scale():
     U = data_knn_rla_generator(xp, data_bench, seed=42, eps=eps)
 
     # Convert benchmark object back into framework array
-    U = xp.from_benchmark(U)
 
     target_dim = int(np.log(n_samples) / (eps * eps))
     if target_dim > n_features:
