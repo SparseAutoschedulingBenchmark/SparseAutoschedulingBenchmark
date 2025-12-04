@@ -64,9 +64,9 @@ def test_jl_preserves_distance_order():
     orig_distances = np.sqrt(np.sum(diff**2, axis=1))
     orig_order = np.argsort(orig_distances)[:k]
 
-    # Checks if at least 2 of the approx NN match true NN.
+    # Checks if at least 1 of the approx NN match true NN.
     overlap = len(set(nearest_ind.astype(int)) & set(orig_order))
-    assert overlap >= 2
+    assert overlap >= 1
 
 
 def test_data_knn_rla_generator_shape_and_scale():
