@@ -116,7 +116,7 @@ def data_knn_rla_generator(xp, data_bench, seed=40, eps=0.1):
         target_dim,
         density_half,
         data_rvs=lambda k: np.full(
-            k, scale, dtype=float
+            k, -scale, dtype=float
         ),  # specified dtype to see of that made a difference
         random_state=rng,
     )
@@ -125,7 +125,7 @@ def data_knn_rla_generator(xp, data_bench, seed=40, eps=0.1):
         target_dim,
         density_half,
         data_rvs=lambda k: np.full(
-            k, -scale, dtype=float
+            k, scale, dtype=float
         ),  # specified dtype to see of that made a difference
         random_state=rng,
     )

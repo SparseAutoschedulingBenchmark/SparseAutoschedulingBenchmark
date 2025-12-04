@@ -74,6 +74,7 @@ def test_jl_preserves_distance_order():
     orig_distances = np.sqrt(np.sum(diff**2, axis=1))
     orig_order = np.argsort(orig_distances)[:k]
 
+    # checks at least one of projected nearest neighbor is actually nearest neighbour
     overlap = len(set(nearest_ind) & set(orig_order))
     assert overlap >= 1
 
