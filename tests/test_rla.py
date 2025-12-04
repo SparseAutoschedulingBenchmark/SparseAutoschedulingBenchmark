@@ -9,13 +9,6 @@ from sparseappbench.benchmarks.RLA_Benchmark import (
 from sparseappbench.frameworks.numpy_framework import NumpyFramework
 
 
-def as_ndarray(xp, x):
-    """Convert anything from benchmark/lazy format into a proper NumPy array."""
-    if hasattr(xp, "from_benchmark"):
-        return np.asarray(xp.from_benchmark(x))
-    return np.asarray(x)
-
-
 @pytest.mark.parametrize(
     "n_samples, n_features, k, eps",
     [
@@ -38,9 +31,9 @@ def test_benchmark_shapes(n_samples, n_features, k, eps):
         xp, data_bench, query_bench, projection_matrix, k=k, eps=eps
     )
 
-    # Convert lazy/benchmark arrays to NumPy for assertions
-    nearest_ind = xp.compute(nearest_ind)
-    nearest_dist = xp.compute(nearest_dist)
+    # Convert benchmark objects back into framework arrays
+    nearest_ind = xp.from_benchmark(nearest_ind)
+    nearest_dist = xp.from_benchmark(nearest_dist)
 
     assert nearest_ind.shape == (k,)
     assert nearest_dist.shape == (k,)
@@ -63,13 +56,13 @@ def test_jl_preserves_distance_order():
         xp, data_bench, query_bench, projection_matrix, k=k, eps=eps
     )
 
-    # Compute concrete arrays for NumPy operations
-    nearest_ind = xp.compute(nearest_ind)
-    data_np = xp.compute(data_bench)
-    query_np = xp.compute(query_bench)
+    # Convert benchmark objects back into framework arrays
+    nearest_ind = xp.from_benchmark(nearest_ind)
+    data_bench = xp.from_benchmark(data_bench)
+    query_bench = xp.from_benchmark(query_bench)
 
     # True distances
-    diff = data_np - query_np
+    diff = data_bench - query_bench
     orig_distances = np.sqrt(np.sum(diff**2, axis=1))
     orig_order = np.argsort(orig_distances)[:k]
 
@@ -87,12 +80,12 @@ def test_data_knn_rla_generator_shape_and_scale():
     data_bench = xp.random.randn(n_samples, n_features)
     U = data_knn_rla_generator(xp, data_bench, seed=42, eps=eps)
 
-    # Compute concrete array
-    U_array = xp.compute(U)
+    # Convert benchmark object back into framework array
+    U = xp.from_benchmark(U)
 
     target_dim = int(np.log(n_samples) / (eps * eps))
     if target_dim > n_features:
         target_dim = n_features
 
-    assert U_array.shape == (n_features, target_dim)
-    assert np.count_nonzero(U_array) > 0
+    assert U.shape == (n_features, target_dim)
+    assert np.count_nonzero(U) > 0
