@@ -36,18 +36,10 @@ def benchmark_johnson_lindenstrauss_nn(
     #  This makes sure everything is outputted as a valid np.ndarray
     # I put the function inside this so
     # I dont have to load another function into test_rla
-    def ensure_ndarray(obj):
-        if isinstance(obj, np.ndarray):
-            return obj
-        try:
-            out = xp.from_benchmark(obj)
-        except TypeError:
-            out = np.asarray(obj)
-        return np.asarray(out)
 
-    data = ensure_ndarray(data_bench)
-    query = ensure_ndarray(query_bench)
-    P = ensure_ndarray(projection_matrix)
+    data = xp.lazy(data_bench)
+    query = xp.lazy(query_bench)
+    P = xp.lazy(projection_matrix)
 
     n_samples, n_features = data.shape
     #  Johnson Lindenstrauss Theorem Lemmna.
@@ -58,8 +50,8 @@ def benchmark_johnson_lindenstrauss_nn(
         target_dim = n_features
 
     # Project to lower subspace
-    projected_data = xp.compute(xp.matmul(data, P))
-    projected_query = xp.compute(xp.matmul(query, P))
+    projected_data = xp.matmul(data, P)
+    projected_query = xp.matmul(query, P)
 
     # -----K Nearest Neighbour from here on out--------
 
@@ -70,34 +62,15 @@ def benchmark_johnson_lindenstrauss_nn(
     # Flattens everything into 1D NumPy Array
     distances = np.asarray(distances).reshape(-1)
 
-    # Get nearest k neighbors
-    nearest_indices = xp.argsort(distances)[:k]
-    nearest_distances = xp.sort(distances)[:k]
-
     # Flattens everything into 1D NumPy Array
-    nearest_indices = np.asarray(nearest_indices, dtype=float).reshape(-1)
-    nearest_distances = np.asarray(nearest_distances, dtype=float).reshape(-1)
+    nearest_indices = xp.compute(xp.argsort(distances)[:k])
+    nearest_distances = xp.compute(xp.sort(distances)[:k])
 
-    # I had troubles with passing test cases
-    # and getting rid of the xp.to_benchmark solved it.
-    return nearest_indices, nearest_distances
+    return xp.to_benchmark(nearest_indices), xp.to_benchmark(nearest_distances)
 
 
 def data_knn_rla_generator(xp, data_bench, seed=40, eps=0.1):
-    # I had lots of TypeErrors errors when it came to xp and slicing and stuff.
-    # This makes sure everything is outputted as a valid np.ndarray.
-    # I put the function inside this so
-    # I dont have to load another function into test_rla.
-    def ensure_ndarray(obj):
-        if isinstance(obj, np.ndarray):
-            return obj
-        try:
-            out = xp.from_benchmark(obj)
-        except TypeError:
-            out = np.asarray(obj)
-        return np.asarray(out)
-
-    data = ensure_ndarray(data_bench)
+    data = xp.lazy(data_bench)
 
     n_samples, n_features = data.shape
     target_dim = np.log(n_samples) / (eps * eps)
@@ -129,6 +102,6 @@ def data_knn_rla_generator(xp, data_bench, seed=40, eps=0.1):
         ),  # specified dtype to see of that made a difference
         random_state=rng,
     )
-    U = U_Neg + U_Pos
-    U_dense = U.toarray()
-    return xp.to_benchmark(np.asarray(U_dense))
+    U = xp.compute(U_Neg + U_Pos)
+
+    return xp.to_benchmark(U)
