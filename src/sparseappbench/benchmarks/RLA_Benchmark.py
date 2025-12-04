@@ -32,11 +32,6 @@ was written by hand.
 def benchmark_johnson_lindenstrauss_nn(
     xp, data_bench, query_bench, projection_matrix, k=5, eps=0.1
 ):
-    # I had lots of TypeErrors errors when it came to xp and slicing and stuff.
-    #  This makes sure everything is outputted as a valid np.ndarray
-    # I put the function inside this so
-    # I dont have to load another function into test_rla
-
     data = xp.lazy(data_bench)
     query = xp.lazy(query_bench)
     P = xp.lazy(projection_matrix)
@@ -62,11 +57,10 @@ def benchmark_johnson_lindenstrauss_nn(
     # Get nearest k neighbors.
     sorted_indices = xp.argsort(distances)
 
-    # I think xp.take could fix this.
+    # Get nearest indices and associated distances.
     nearest_indices = xp.take(sorted_indices, xp.arange(k))
     nearest_distances = xp.take(xp.sort(distances), xp.arange(k))
 
-    # Only compute at the very end
     nearest_indices = xp.compute(nearest_indices)
     nearest_distances = xp.compute(nearest_distances)
 
@@ -75,8 +69,10 @@ def benchmark_johnson_lindenstrauss_nn(
 
 def data_knn_rla_generator(xp, data_bench, seed=40, eps=0.1):
     data = xp.lazy(data_bench)
-
     n_samples, n_features = data.shape
+    #  Johnson Lindenstrauss Theorem Lemmna.
+    # The eps represents the disortion of distance by epsilon,
+    # between the the original space and the reduced subspace
     target_dim = np.log(n_samples) / (eps * eps)
     if target_dim > n_features:
         target_dim = n_features
