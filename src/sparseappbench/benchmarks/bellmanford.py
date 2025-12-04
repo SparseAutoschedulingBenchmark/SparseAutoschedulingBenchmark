@@ -14,8 +14,8 @@ Often, many graphs when represented as adjacency matrices do not have a lot of
 edges while there are n^2 entries, which means that sparsity can be large and optimised.
 
 Citation for reference implementation:
-Kepner, Jeremy, and John Gilbert, eds. Graph algorithms in the language of
-linear algebra
+Kepner, Jeremy, and John Gilbert, eds.
+Graph algorithms in the language of linear algebra
 
 Statement on the use of Generative AI: No generative AI was used to construct
 the benchmark function itself. This statement was written by hand.
