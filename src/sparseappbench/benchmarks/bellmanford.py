@@ -30,10 +30,13 @@ def bellman_ford(xp, edges, src):
     D = xp.full((n,), xp.inf)
     D[src] = 0
 
-    for i in range(n):
+    for _ in range(n):
+        D_prev = D
         D = xp.lazy(D)
         candidates = D[:, None] + G
         D = xp.minimum(D, candidates.min(axis=0))
         D = xp.compute(D)
+        if D == D_prev:
+            break
 
     return xp.to_benchmark(D_lazy)
