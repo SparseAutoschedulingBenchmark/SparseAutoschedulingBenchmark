@@ -12,12 +12,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def solve_ivp_euler_forward(
-    dydx: Callable[[float, float], float], span: tuple[float, float], y0: np.ndarray
+def forward_euler(
+    dydx: Callable[[float, float], float], span: tuple[float, float], y0: np.ndarray,
+    first_step: float | None = None, **kwargs
 ) -> tuple[np.ndarray, np.ndarray]:
     """Forward Euler method of approximating ordinary differential equations (ODEs)."""
-    inputs = np.linspace(span[0], span[1], 1000)
-    step = inputs[1] - inputs[0]
+    if first_step is None:
+        inputs = np.linspace(span[0], span[1], 1000)
+        step = inputs[1] - inputs[0]
+    else:
+        inputs = np.arange(span[0], span[1], first_step)
+        step = first_step
     outputs = np.zeros((len(inputs), len(y0)))
     outputs[0] = y0
 
@@ -67,7 +72,7 @@ def display_rc() -> None:
     dVdt = partial(rc, R=R, C=C, Vs_func=step_input)
     # dVdt = lambda t, Vc: rc_ode(t, Vc, R, C, step_input)
 
-    time, voltage = solve_ivp_euler_forward(dVdt, (0, t_max), [V_C_initial])
+    time, voltage = forward_euler(dVdt, (0, t_max), [V_C_initial])
 
     plt.figure(figsize=(8, 5))
     plt.plot(time * 1e3, voltage, label="Numerical Solution")
@@ -92,7 +97,7 @@ def display_lv() -> None:
     # dydt = lambda t, y: lotka_volterra(t, y, a, b, c, d)
 
     # Solve
-    t, sol = solve_ivp_euler_forward(dydt, (0, 30), y0)
+    t, sol = forward_euler(dydt, (0, 30), y0)
     prey = sol[:, 0]
     predators = sol[:, 1]
 
@@ -116,7 +121,7 @@ def display_rlc() -> None:
     y0 = np.array([0.0, 0.0]) # y0[0] is Vc, y0[1] is dVc/dt
     dVdt = partial(rlc, R=R, L=L, C=C, Vs_func=step_input)
     # dVdt = lambda t, y: rlc(t, y, R, L, C, step_input)
-    t, sol = solve_ivp_euler_forward(dVdt, (0, t_max), y0)
+    t, sol = forward_euler(dVdt, (0, t_max), y0)
 
     plt.plot(t * 1000, sol[:, 0])
     plt.xlabel("Time (ms)")
@@ -128,4 +133,4 @@ def display_rlc() -> None:
 
 
 if __name__ == "__main__":
-    display_rlc()
+    display_rc()
