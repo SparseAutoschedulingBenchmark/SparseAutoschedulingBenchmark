@@ -39,4 +39,4 @@ def bellman_ford(xp, edges, src):
         if D == D_prev:
             break
 
-    return xp.to_benchmark(D_lazy)
+    return xp.to_benchmark(D)
