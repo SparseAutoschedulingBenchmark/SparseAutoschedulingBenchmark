@@ -5,8 +5,10 @@ Email: aduddu3@gatech.edu
 Motivation (Importance of problem with citation):
 Efficiently solving DC operating points for large-scale nonlinear
 circuits in SPICE simulation is both critical and challenging.
-Jiang, Jiqing, et al. “Boosting the Performance of Transistor-Level Circuit Simulation with GNN.”
-Proceedings of the 30th Asia and South Pacific Design Automation Conference, 20 Jan. 2025,
+Jiang, Jiqing, et al.
+“Boosting the Performance of Transistor-Level Circuit Simulation with GNN.”
+Proceedings of the 30th Asia and
+South Pacific Design Automation Conference, 20 Jan. 2025,
 pp. 114–120, www.ssslab.cn/assets/papers/2025-jiang-boosting.pdf,
 https://doi.org/10.1145/3658617.3703149. Accessed 6 Dec. 2025. 
 Role of sparsity (How sparsity is used in the problem):
