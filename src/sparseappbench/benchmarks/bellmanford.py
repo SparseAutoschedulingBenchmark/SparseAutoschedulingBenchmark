@@ -36,7 +36,7 @@ def bellman_ford(xp, edges, src):
         candidates = D + G
         D = xp.minimum(D, candidates.min(axis=0))
         stop = xp.all(D_prev == D)
-        D, stop = xp.compute(D, stop)
+        D, stop = xp.compute((D, stop))
         if stop:
             break
 
