@@ -110,5 +110,5 @@ def dg_forward_euler_lotka_volterra():
 
     # Solve
     time, populations = forward_euler(np, dydt, (0, 30), y0, 1)
-    prey, predators = zip(*populations)
+    prey, predators = zip(*populations, strict=True)
     return (time, prey, predators)
