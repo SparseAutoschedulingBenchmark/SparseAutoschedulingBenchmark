@@ -8,7 +8,7 @@ circuits in SPICE simulation is both critical and challenging.
 Jiang, Jiqing, et al. “Boosting the Performance of Transistor-Level Circuit Simulation with GNN.”
 Proceedings of the 30th Asia and South Pacific Design Automation Conference, 20 Jan. 2025,
 pp. 114–120, www.ssslab.cn/assets/papers/2025-jiang-boosting.pdf,
-https://doi.org/10.1145/3658617.3703149. Accessed 6 Dec. 2025. 
+https://doi.org/10.1145/3658617.3703149. Accessed 6 Dec. 2025.
 Role of sparsity (How sparsity is used in the problem):
 With large-scale circuit simulations, such as nodal analysis,
 most matrices are sparse due to non-dense connectivity in the system.
@@ -21,7 +21,6 @@ No generative AI was used to write the benchmark function itself. Generative
 AI was used for debugging. This statement was written by hand.
 """
 
-from collections.abc import Callable
 from functools import partial
 
 import numpy as np
@@ -60,9 +59,7 @@ def step_input(t):
     return 5.0 if t >= 0 else 0.0
 
 
-def rc(
-    t, Vc, R, C, Vs_func
-):
+def rc(t, Vc, R, C, Vs_func):
     """Differential equation for RC Circuit voltage."""
     tau = R * C
     Vs = Vs_func(t)  # Get the current source voltage
@@ -102,9 +99,7 @@ def dg_forward_euler_rlc(R, L, C, t_max, y0):
     return (np, dVdt, (0, t_max), y0, t_max / 1000)
 
 
-def lotka_volterra(
-    t, state, a, b, c, d
-):
+def lotka_volterra(t, state, a, b, c, d):
     x, y = state
     dxdt = a * x - b * x * y
     dydt = d * x * y - c * y
