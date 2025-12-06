@@ -24,8 +24,6 @@ AI was used for debugging. This statement was written by hand.
 """
 
 from functools import partial
-import matplotlib.pyplot as plt
-
 
 import numpy as np
 from scipy.integrate import solve_ivp
@@ -119,9 +117,12 @@ def dg_forward_euler_lotka_volterra(a, b, c, d, y0):
     # Solve
     return (np, dydt, (0, 30), y0, 1)
 
+
 def test_euler_forward_rc():
     """Test function for Forward Euler with RC Circuit."""
-    (time, voltage) = forward_euler(*dg_forward_euler_rc(R=1000, C=0.001, t_max=5, V_C_initial=0))
+    (time, voltage) = forward_euler(
+        *dg_forward_euler_rc(R=1000, C=0.001, t_max=5, V_C_initial=0)
+    )
     voltage = [v[0] for v in voltage]
     actual = solve_ivp(
         fun=partial(rc, R=1000, C=0.001, Vs_func=step_input),
@@ -132,9 +133,14 @@ def test_euler_forward_rc():
     error = np.max(np.abs(voltage - actual.y[0].T))
     assert error < 0.05, f"Exceeds error tolerance: {error}"
 
+
 def test_euler_forward_rlc():
     """Test function for Forward Euler with RLC Circuit."""
-    (time, voltage) = forward_euler(*dg_forward_euler_rlc(R=100, L=10e-3, C=1e-7, t_max=100 * 10e-3 / 100, y0=[0, 0]))
+    (time, voltage) = forward_euler(
+        *dg_forward_euler_rlc(
+            R=100, L=10e-3, C=1e-7, t_max=100 * 10e-3 / 100, y0=[0, 0]
+        )
+    )
     voltage = [v[0] for v in voltage]
     actual = solve_ivp(
         fun=partial(rlc, R=100, L=10e-3, C=1e-7, Vs_func=step_input),
@@ -146,9 +152,12 @@ def test_euler_forward_rlc():
     error = np.max(np.abs(voltage - actual.y[0].T))
     assert error < 0.05, f"Exceeds error tolerance: {error}"
 
+
 def test_euler_forward_lv():
     """Test function for Forward Euler with Lotka-Volterra Equations."""
-    (time, populations) = forward_euler(*dg_forward_euler_lotka_volterra(a=0.1, b=0.02, c=0.3, d=0.01, y0=[40, 9]))
+    (time, populations) = forward_euler(
+        *dg_forward_euler_lotka_volterra(a=0.1, b=0.02, c=0.3, d=0.01, y0=[40, 9])
+    )
     actual = solve_ivp(
         fun=partial(lotka_volterra, a=0.1, b=0.02, c=0.3, d=0.01),
         t_span=(0, 30),
